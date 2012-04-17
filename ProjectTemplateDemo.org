@@ -1,0 +1,456 @@
+#+TITLE:ProjectTemplate Demo
+#+AUTHOR: Ivan Hanigan
+#+email: ivan.hanigan@anu.edu.au
+#+LaTeX_CLASS: beamer
+#+LATEX_HEADER: \usepackage{verbatim}
+
+# README
+# This is an Emacs Orgmode document that contains the code base for the project
+# to create the required files and directories please follow the steps below in order:
+# 1 (in Emacs) enter C-c C-v t (this will tangle the code that initialises the project, some tangling will fail, ignore errors)
+# 2 open the new file 'init.r' and evaluate the code to create.project('analysis')
+# 3 enter C-c C-v t again to complete the tangling (possible now because project directories have been created)
+# 4 open the new file 'analysis/go.r' and evaluate the code chunks
+# 5 open the new file 'analysis/reports/letters.tex' and run LaTeX to produce the report
+# 6 in Emacs enter C-c C-e l (Lowercase L), accept the invitation to evaluate 2 chunks of R code that copy the plots to the root directory and include in the tex file
+
+#+name:overview
+#+begin_src R :session *R* :tangle init.r :exports none :eval no
+  ####
+  # MAKE SURE YOU HAVE THE CORE LIBS
+  if (!require(ProjectTemplate)) install.packages('ProjectTemplate', repos='http://cran.csiro.au'); require(ProjectTemplate)
+  if (!require(lubridate)) install.packages('lubridate', repos='http://cran.csiro.au'); require(lubridate)
+  if (!require(reshape)) install.packages('reshape', repos='http://cran.csiro.au'); require(reshape)
+  if (!require(plyr)) install.packages('plyr', repos='http://cran.csiro.au'); require(plyr)
+  if (!require(ggplot2)) install.packages('ggplot2', repos='http://cran.csiro.au'); require(ggplot2)
+  rootdir <- getwd()  
+#+end_src
+* The Compendium concept
+\section{The Compendium concept}
+My goal is to develop data analysis projects along the lines of the Compendium concept of Gentleman and Temple Lang (2007) \cite{Gentleman2007}.
+Compendia are dynamic documents containing text, code and data.
+Transformations are applied to the compendium to view its various aspects.
+
+- Code Extraction (Tangle): source code
+- Export (Weave): LaTeX, HTML, etc
+- Code Evaluation
+
+I'm also following the orgmode technique of Schulte et al (2012) \cite{Schulte}
+
+* ProjectTemplate
+\section{ProjectTemplate}
+This is a simple demo of the R package \emph{ProjectTemplate} http://projecttemplate.net/ which is aimed at standardising the structure and general development of data analysis projects in R. 
+A primary aim is to allow analysts to quickly get a project loaded up and ready to:
+- reproduce or 
+- create new data analyses.
+
+
+* Why?
+It has been recognised on the R blogosphere that it 
+- is ``meant to handle very complex research projects'' (http://bryer.org/2012/maker-an-r-package-for-managing-document-building-and-versioning) and 
+- is considered as being amongst the best approaches to the workflow for doing data analysis with R (http://blog.revolutionanalytics.com/2010/10/a-workflow-for-r.html)
+
+* The Reichian load, clean, func, do approach
+\section{The Reichian load, clean, func, do approach}
+
+The already mentioned blog post http://blog.revolutionanalytics.com/2010/10/a-workflow-for-r.html also links to another`best' approach, the: 
+
+- \emph{Reichian load, clean, func, do} approach http://stackoverflow.com/a/1434424.  
+
+
+Which I've also followed to prepare this demo using the tutorial and data from the package website http://projecttemplate.net/getting_started.html
+* Init the project
+\section{Init the project}
+First we want to initialise the project directory.
+#+name:init
+#+begin_src R :session *R* :tangle init.r :eval no
+  ####
+  # init
+  require('ProjectTemplate')
+  create.project('analysis',minimal=TRUE)
+#+end_src
+
+* dir()
+#+name:dir
+#+begin_src R :session *R* :tangle init.r :eval no
+  ####
+  # init dir
+  dir('analysis')
+#+end_src
+
+| cache   |
+| config  |
+| data    |
+| munge   |
+| README  |
+| src     |
+* The reports directory
+  I've added the reports directory manually and asked the package author if this is generic enough to be in the defaults for 
+\begin{verbatim} 
+minimal = TRUE 
+\end{verbatim}
+
+I believe it may be as the \emph{Getting Started} guidebook states:
+#+begin_quote
+`It's meant to contain the sort of written descriptions of the results of your analyses that you'd \textbf{publish in a scientific paper.}
+
+With that report written ..., we've gone through \textbf{the simplest sort of analysis you might run with ProjectTemplate}. 
+#+end_quote
+#+name:reports
+#+begin_src R :session *R* :tangle init.r :eval no
+  ####
+  # init reports
+  dir.create('analysis/reports')
+#+end_src
+* Do the analysis
+\section{Do the analysis: use load,clean,func,do}
+#+name:get tutorial data
+#+begin_src R :session *R* :tangle analysis/go.r :eval no
+  ####
+  # this is the start of the analysis, 
+  # assumes the init.r file has been run
+  if(file.exists('analysis')) setwd('analysis')  
+  Sys.Date()
+  # keep a track of the dates the analysis is rerun
+  getwd()
+  # may want to keep a reference of the directory 
+  # the project is in so we can track the history 
+#+end_src
+
+* Get the projecttemplate tutorial data
+Get the data from [[http://projecttemplate.net/letters.csv.bz2]] (I downloaded on 13-4-2012)
+Put it in the data directory for auto loading.
+
+#+name:get tutorial data
+#+begin_src R :session *R* :tangle analysis/go.r :eval no
+  ####
+  # analysis get tutorial data
+  download.file('http://projecttemplate.net/letters.csv.bz2', 
+    destfile = 'data/letters.csv.bz2', mode = 'wb')
+  
+#+end_src
+* Tools
+# \section{func}
+Edit the \emph{config/global.dcf} file to make sure that the load\_libraries setting is turned on
+
+#+name:analysis tools
+#+begin_src dcf :tangle analysis/config/global.dcf :exports none :eval no
+data_loading: on
+munging: off
+logging: off
+load_libraries: on
+libraries: reshape, plyr, ggplot2, stringr, lubridate
+as_factors: on
+data_tables: off
+#+end_src
+* Load the analysis data
+#\section{load}
+#+name:analysis load
+#+begin_src R :session *R* :tangle analysis/go.r :eval no
+  ####
+  # analysis load
+  require(ProjectTemplate)
+  load.project()
+#+end_src
+* check the analysis data
+#\section{clean}
+#+name:check letters
+#+begin_src R :session *R* :tangle analysis/go.r :eval no
+tail(letters)
+#+end_src
+
+| zyryan     | z | y |
+| zythem     | z | y |
+| zythia     | z | y |
+| zythum     | z | y |
+| zyzomys    | z | y |
+| zyzzogeton | z | y |
+
+
+* Develop munge code
+#\section{load with processing (munge)}
+
+Edit the \emph{munge/01-A.R} script so that it contains the following two lines of code:
+#+name:edit munge
+#+begin_src R :session *R* :tangle analysis/munge/01-A.r :eval no
+# For our current analysis, we're interested in the total 
+# number of occurrences of each letter in the first and 
+# second letter positions and not in the words themselves.
+# compute aggregates
+first.letter.counts <- ddply(letters, c('FirstLetter'), 
+  nrow)
+second.letter.counts <- ddply(letters, c('SecondLetter'), 
+  nrow)
+#+end_src
+Now if we run with 
+\begin{verbatim}
+load.project()
+\end{verbatim}
+all munging will happen automatically.  However...
+# NB deprecated, it is better to do this with source('munge/xyz.r'); cache('xyz.r')??
+#+name:load with munge
+#+begin_src R :session *R* :exports none :eval no
+  load.project()
+  ls()
+#+end_src
+* To munge or not to munge?
+As you'll see on the website, once the data munging is completed and outputs cached, load.project() will keep recomputing work over and over.  
+The author suggests we manually edit our configuration file.
+#+name:load without munge
+#+begin_src R :session *R* :tangle analysis/go.r :eval no
+ # edit the config file and turn munge on
+ # load.project()
+ # edit the config file and turn munge off
+ # or my preference
+ source('munge/01-A.r')
+# which can be included in our first analysis script
+# but subsequent analysis scripts can just call load.project() 
+# without touching the config file
+#+end_src
+* Cache
+Once munging is complete we cache the results
+#+name:cache
+#+begin_src R :session *R* :tangle analysis/go.r :eval no
+  cache('first.letter.counts')
+  cache('second.letter.counts')
+#+end_src
+# And need to keep an eye on the implications for our config file to avoid re-calculating these next time we 
+#\begin{verbatim}
+#load.project()
+#\end{verbatim}
+
+
+#\section{do}
+* Plot first and second letter counts
+Produce some simple density plots to see the shape of the first and second letter counts. 
+- Create \emph{src/generate\_plots.R}. Use the src directory to store any analyses that you run. 
+- The convention is that every analysis script starts with load.project() and then goes on to do something original with the data.
+
+* Do generate plots
+Write the first analysis script into a file in \textbf{src}
+#+name:generate_plots
+#+begin_src R :session *R* :tangle analysis/src/generate_plots.r :eval no
+  require('ProjectTemplate')
+  load.project()
+  plot1 <- ggplot(first.letter.counts, aes(x = V1)) + 
+    geom_density()
+  ggsave(file.path('reports', 'plot1.pdf'))
+  
+  plot2 <- ggplot(second.letter.counts, aes(x = V1)) + 
+    geom_density()
+  ggsave(file.path('reports', 'plot2.pdf'))
+#+end_src
+
+And now run it (I do this from a main `overview' script).
+
+#+name:Do generate plots
+#+begin_src R :session *R* :tangle analysis/go.r :eval no
+  source('src/generate_plots.R')
+#+end_src
+* First letter
+#+name:fig1 copy
+#+begin_src R :session *Rroot* :exports none :eval yes
+  file.copy('analysis/reports/plot1.pdf', 'plot1.pdf')
+#+end_src
+
+\begin{figure}[!h]
+\centering
+\includegraphics[width=.6\textwidth]{plot1.pdf}
+\caption{plot1.pdf}
+\label{fig:plot1.pdf}
+\end{figure}
+
+* Second letter
+#+name:fig2 copy
+#+begin_src R :session *Rroot* :exports none :eval yes
+  file.copy('analysis/reports/plot2.pdf', 'plot2.pdf')
+#+end_src
+\begin{figure}[!h]
+\centering
+\includegraphics[width=.6\textwidth]{plot2.pdf}
+\caption{plot2.pdf}
+\label{fig:plot2.pdf}
+\end{figure}
+
+* Report results
+\section{Report results}
+We see that both the first and second letter distributions are very skewed. To make a note of this for posterity, we can write up our discovery in a text file that we store in the reports directory.
+\begin{verbatim}
+
+\documentclass[a4paper]{article}
+\title{Letters analysis}
+\author{Ivan Hanigan}
+\begin{document}
+\maketitle
+blah blah blah
+\end{document}
+
+\end{verbatim}
+
+#+name:report results
+#+begin_src latex :session *R* :tangle analysis/reports/letters.tex :exports none :eval no
+% Created 2012-03-29 Thu 12:41
+\documentclass[a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{fixltx2e}
+\usepackage{graphicx}
+\usepackage{longtable}
+\usepackage{float}
+\usepackage{wrapfig}
+\usepackage{soul}
+\usepackage{textcomp}
+\usepackage{latexsym}
+\usepackage{amssymb}
+\usepackage{hyperref}
+\tolerance=1000
+\usepackage{verbatim}
+\setlength{\parindent}{0in}
+\providecommand{\alert}[1]{\textbf{#1}}
+
+\title{Letters analysis}
+\author{Ivan Hanigan}
+\date{\today}
+\hypersetup{
+  pdfkeywords={},
+  pdfsubject={},
+  pdfcreator={Emacs Org-mode version 7.8.03}}
+
+\begin{document}
+
+\maketitle
+
+\setcounter{tocdepth}{3}
+\tableofcontents
+\vspace*{1cm}
+\hrule
+
+\section{Intro}
+\clearpage
+\section{First letter}
+\begin{figure}[!h]
+\centering
+\includegraphics[width=\textwidth]{plot1.pdf}
+\caption{plot1.pdf}
+\label{fig:plot1.pdf}
+\end{figure}
+\clearpage
+
+\section{Second letter}
+\begin{figure}[!h]
+\centering
+\includegraphics[width=\textwidth]{plot2.pdf}
+\caption{plot2.pdf}
+\label{fig:plot2.pdf}
+\end{figure}
+\clearpage
+
+\section{Discussion}
+We see that both the first and second letter distributions are very skewed. To make a note of this for posterity, we can write up our discovery in a text file that we store in the reports directory. Like the graphs directory, the reports directory is generated by ProjectTemplate automatically when we run create.project(). It's meant to contain the sort of written descriptions of the results of your analyses that you'd publish in a scientific paper.
+
+\section{Conclusion}
+With that report written and stored in the reports directory, we've gone through the simplest sort of analysis you might run with ProjectTemplate
+
+\section{References}
+
+\end{document}
+#+end_src
+* Produce final report
+#+name:final report
+#+begin_src R :session *R* :tangle analysis/go.r :eval no
+# now run LaTeX on the file in reports/letters.tex
+#+end_src
+* Personalised project management directories
+
+\section{Personalised project management directories}
+#+name:additions
+#+begin_src R :session *R* :tangle init.r :exports none :eval no
+  ####
+  # init additional directories for project management
+  analysisTemplate <- function(rootdir = getwd()){
+   setwd(rootdir)
+   # first dir
+   dir.create(file.path(rootdir,'analysis'))
+   dir.create(file.path(rootdir,'analysis','reports'))
+   dir.create(file.path(rootdir,'data'))
+   dir.create(file.path(rootdir,'document'))
+   dir.create(file.path(rootdir,'metadata'))
+   dir.create(file.path(rootdir,'references'))
+   dir.create(file.path(rootdir,'tools'))
+   dir.create(file.path(rootdir,'versions'))
+   dir.create(file.path(rootdir,'admin'))
+   dir.create(file.path(rootdir,'admin','proposal'))
+   dir.create(file.path(rootdir,'admin','budget'))
+   }
+
+#+end_src
+
+
+#+begin_src R :session *R* :tangle init.r :eval no
+  ####
+  # init additional directories for project management
+  analysisTemplate()
+#+end_src
+#+begin_src R :session *R* :tangle init.r :eval no
+  dir()
+#+end_src
+
+| admin                   |
+| analysis                |
+| data                    |
+| document                |
+| init.r                  |
+| metadata                |
+| ProjectTemplateDemo.org |
+| references              |
+| tools                   |
+| versions                |
+* Navigating using other code editors
+\section{Navigating using other code editors}
+Emacs is not for everyone. 
+#+begin_quote
+a great operating system, lacking only a decent editor
+#+end_quote
+http://upsilon.cc/~zack/blog/posts/2008/10/from_Vim_to_Emacs_-_part_1/
+
+
+Let's take a look at the project using RStudio.
+
+* RStudio
+# because an aim of this project is to complete the setup on a completely fresh machine from the single compendium file, 
+# the screen shot from my Rstudio session will be lacking and break the latex code.
+# I've commented it out here.#
+#\begin{figure}[!h]
+#\centering
+#\includegraphics[width=1.3\textwidth]{Rstudio.pdf}
+#\caption{Rstudio.pdf}
+#\label{fig:Rstudio.pdf}
+#\end{figure}
+* Conclusions
+The Emacs Orgmode file is the compendium from which the whole analysis can be re-created.
+The upshot is that once I have developed the project's main \emph{\textbf{.org}} file and completed the analysis I can send it (and only it) to another analyst and if they run it (using Emacs) it should get the project to exactly the same state that it was in when I left it, ready for reproduction or extension.
+-------
+\bigskip
+THANKS for listening!
+
+To see a copy of the org file for this demo go to https://github.com/ivanhanigan/ProjectTemplateDemo
+* References
+\section{References}
+#\bibliographystyle{unsrt}
+#\bibliography{I:/references/library}
+
+\begin{thebibliography}{1}
+
+\bibitem{Gentleman2007}
+Robert Gentleman and Duncan {Temple Lang}.
+\newblock {Statistical Analyses and Reproducible Research}.
+\newblock {\em Journal of Computational and Graphical Statistics}, 16(1):1--23,
+  March 2007.
+
+\bibitem{Schulte}
+E~Schulte, D~Davison, T~Dye, and C~Dominik.
+\newblock {A Multi-Language Computing Environment for Literate Programming and
+  Reproducible Research}.
+\newblock {\em Journal of Statistical Software}, 46(3), 2012.
+
+\end{thebibliography}
