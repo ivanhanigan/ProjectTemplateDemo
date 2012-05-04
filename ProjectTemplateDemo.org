@@ -239,13 +239,14 @@ Write the first analysis script into a file in \textbf{src}
   plot2 <- ggplot(second.letter.counts, aes(x = V1)) + 
     geom_density()
   ggsave(file.path('reports', 'plot2.pdf'))
+  dev.off()
 #+end_src
 
 And now run it (I do this from a main `overview' script).
 
 #+name:Do generate plots
 #+begin_src R :session *R* :tangle analysis/go.r :eval no
-  source('src/generate_plots.R')
+  source('src/generate_plots.r')
 #+end_src
 * First letter
 #+name:fig1 copy
