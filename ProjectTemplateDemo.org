@@ -6,8 +6,9 @@
 
 # README
 # This is an Emacs Orgmode document that contains the code base for the project
+# Uses Emacs 24, see  http://kieranhealy.org/emacs-starter-kit.html
 # to create the required files and directories please follow the steps below in order:
-# 1 (in Emacs) enter C-c C-v t (this will tangle the code that initialises the project, some tangling will fail, ignore errors)
+# 1 in Emacs enter C-c C-v t (this will tangle the code that initialises the project, some tangling will fail, ignore errors)
 # 2 open the new file 'init.r' and evaluate the code to create.project('analysis')
 # 3 enter C-c C-v t again to complete the tangling (possible now because project directories have been created)
 # 4 open the new file 'analysis/go.r' and evaluate the code chunks
