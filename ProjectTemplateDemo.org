@@ -12,7 +12,7 @@
 # 2 open the new file 'init.r' and evaluate the code to create.project('analysis')
 # 3 enter C-c C-v t again to complete the tangling (possible now because project directories have been created)
 # 4 open the new file 'analysis/go.r' and evaluate the code chunks
-# 5 open the new file 'analysis/reports/letters.tex' and run LaTeX to produce the report
+# 5 open the new file 'analysis/reports/letters.tex' and run LaTeX to produce the report (if the images to include in First and Second letter sections below do exist then set eval to yes and uncomment the include figures chunk)
 # 6 in Emacs enter C-c C-e l (Lowercase L), accept the invitation to evaluate 2 chunks of R code that copy the plots to the root directory and include in the tex file
 
 #+name:overview
@@ -38,6 +38,30 @@ Transformations are applied to the compendium to view its various aspects.
 
 I'm also following the orgmode technique of Schulte et al (2012) \cite{Schulte}
 
+* The R code that produced this report
+
+I support the philosophy of Reproducible Research http://www.sciencemag.org/content/334/6060/1226.full, and where possible I provide data and code in the statistical software R that will allow analyses to be reproduced.  This document is prepared automatically from the associated Sweave (RNW) file.  If you do not have access to the RNW file please contact me.
+#+name:copyright
+#+begin_src R :session *R* :tangle init.r :exports none :eval no
+cat('
+ #######################################################################
+ ## The R code is free software; please cite this paper as the source.  
+ ## Copyright 2012, Ivan C Hanigan <ivan.hanigan@gmail.com> 
+ ## This program is free software; you can redistribute it and/or modify
+ ## it under the terms of the GNU General Public License as published by
+ ## the Free Software Foundation; either version 2 of the License, or
+ ## (at your option) any later version.
+ ## 
+ ## This program is distributed in the hope that it will be useful,
+ ## but WITHOUT ANY WARRANTY; without even the implied warranty of
+ ## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ ## GNU General Public License for more details.
+ ## Free Software
+ ## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+ ## 02110-1301, USA
+ #######################################################################
+')
+#+end_src
 * ProjectTemplate
 \section{ProjectTemplate}
 This is a simple demo of the R package \emph{ProjectTemplate} http://projecttemplate.net/ which is aimed at standardising the structure and general development of data analysis projects in R. 
@@ -59,7 +83,25 @@ The already mentioned blog post http://blog.revolutionanalytics.com/2010/10/a-wo
 - \emph{Reichian load, clean, func, do} approach http://stackoverflow.com/a/1434424.  
 
 
-Which I've also followed to prepare this demo using the tutorial and data from the package website http://projecttemplate.net/getting_started.html
+By Josh Reich.  I've also followed to prepare this demo using the tutorial and data from the package website http://projecttemplate.net/getting_started.html
+
+* The Peng NMMAPSlite approach
+\section{The Peng NMMAPSlite approach}
+The other approach I followed was that of Roger Peng from Johns Hopkins and his NMMAPSlite R package.  Especially the function
+\begin{verbatim}
+readCity(name, collapseAge = FALSE, asDataFrame = TRUE)
+\end{verbatim}
+
+Arguments
+- name 	character, abbreviated name of a city
+- collapseAge 	logical, should age categories be collapsed?
+- asDataFrame 	logical, should a data frame be returned?)
+
+Description: Provides remote access to daily mortality, weather, and
+        air pollution data from the National Morbidity, Mortality, and
+        Air Pollution Study for 108 U.S. cities (1987--2000); data are
+        obtained from the Internet-based Health and Air Pollution
+        Surveillance System (iHAPSS)
 * Init the project
 \section{Init the project}
 First we want to initialise the project directory.
@@ -240,7 +282,6 @@ Write the first analysis script into a file in \textbf{src}
   plot2 <- ggplot(second.letter.counts, aes(x = V1)) + 
     geom_density()
   ggsave(file.path('reports', 'plot2.pdf'))
-  dev.off()
 #+end_src
 
 And now run it (I do this from a main `overview' script).
@@ -251,28 +292,28 @@ And now run it (I do this from a main `overview' script).
 #+end_src
 * First letter
 #+name:fig1 copy
-#+begin_src R :session *Rroot* :exports none :eval yes
+#+begin_src R :session *Rroot* :exports none :eval no
   file.copy('analysis/reports/plot1.pdf', 'plot1.pdf')
 #+end_src
 
-\begin{figure}[!h]
-\centering
-\includegraphics[width=.6\textwidth]{plot1.pdf}
-\caption{plot1.pdf}
-\label{fig:plot1.pdf}
-\end{figure}
+# \begin{figure}[!h]
+# \centering
+# \includegraphics[width=.6\textwidth]{plot1.pdf}
+# \caption{plot1.pdf}
+# \label{fig:plot1.pdf}
+# \end{figure}
 
 * Second letter
 #+name:fig2 copy
-#+begin_src R :session *Rroot* :exports none :eval yes
+#+begin_src R :session *Rroot* :exports none :eval no
   file.copy('analysis/reports/plot2.pdf', 'plot2.pdf')
 #+end_src
-\begin{figure}[!h]
-\centering
-\includegraphics[width=.6\textwidth]{plot2.pdf}
-\caption{plot2.pdf}
-\label{fig:plot2.pdf}
-\end{figure}
+# \begin{figure}[!h]
+# \centering
+# \includegraphics[width=.6\textwidth]{plot2.pdf}
+# \caption{plot2.pdf}
+# \label{fig:plot2.pdf}
+# \end{figure}
 
 * Report results
 \section{Report results}
@@ -378,11 +419,12 @@ With that report written and stored in the reports directory, we've gone through
    dir.create(file.path(rootdir,'document'))
    dir.create(file.path(rootdir,'metadata'))
    dir.create(file.path(rootdir,'references'))
-   dir.create(file.path(rootdir,'tools'))
-   dir.create(file.path(rootdir,'versions'))
+   # dir.create(file.path(rootdir,'tools'))
+   # dir.create(file.path(rootdir,'versions'))
    dir.create(file.path(rootdir,'admin'))
    dir.create(file.path(rootdir,'admin','proposal'))
    dir.create(file.path(rootdir,'admin','budget'))
+   file.create(file.path(rootdir,'admin','DataManagementPlan.txt'))
    }
 
 #+end_src
@@ -421,7 +463,7 @@ Let's take a look at the project using RStudio.
 * RStudio
 # because an aim of this project is to complete the setup on a completely fresh machine from the single compendium file, 
 # the screen shot from my Rstudio session will be lacking and break the latex code.
-# I've commented it out here.#
+# I've commented it out here.
 #\begin{figure}[!h]
 #\centering
 #\includegraphics[width=1.3\textwidth]{Rstudio.pdf}
@@ -436,6 +478,10 @@ The upshot is that once I have developed the project's main \emph{\textbf{.org}}
 THANKS for listening!
 
 To see a copy of the org file for this demo go to https://github.com/ivanhanigan/ProjectTemplateDemo
+# * Why not use make?
+# My main reason for not using this useful approach is that I work with other people, who may not want to `play' with as many software tools as I do.
+# The system I use involves R, Emacs orgmode, ESS, LaTeX (and optionally git).  
+# The end user of my work may not want to use any of these (apart from R), so I don't want to include too many extra things.
 * References
 \section{References}
 #\bibliographystyle{unsrt}
@@ -456,3 +502,32 @@ E~Schulte, D~Davison, T~Dye, and C~Dominik.
 \newblock {\em Journal of Statistical Software}, 46(3), 2012.
 
 \end{thebibliography}
+# notes for presentation
+# have open 
+# a complex flow diagram to make the point about 'very' complex projects
+# the ppt
+# c:/temp/ptdemo
+# 	ask if keen to see live demo
+# Rstudio (empty) 
+
+# intro with vcomplex flow diag
+# explain the theoretical background of the analysis (indirect, direct and regression adjustment)
+# goto ppt (mention Jermy anglims presentation)
+# talk to slides till dir()
+# flip into orgmode and show 6 steps to create, load and do project
+# do the init.r and the second tangle
+# back to ppt and go to the report latex bit
+# go to the orgmode and run the go and show the latex (optionally run that)
+# back to ppt and show personalised
+# back to orgmode to show analysisTemplate() function
+# back to ppt to show 'emacs not for everyone'
+# goto Rstudio and create proj, setup git, 
+# back to ppt to conclude and show link to github and recommend the references
+
+* System State
+\section{System State}
+Note down the state of the computer at the time of the successful run (note that this doesn't export to the LaTeX file using exports results).
+#+name:sessionInfo
+#+begin_src R :session *R*  :eval no 
+sessionInfo()
+#+end_src
