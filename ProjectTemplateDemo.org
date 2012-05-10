@@ -11,7 +11,7 @@
 # 1 in Emacs enter C-c C-v t (this will tangle the code that initialises the project, some tangling will fail, ignore errors)
 # 2 open the new file 'init.r' and evaluate the code to create.project('analysis')
 # 3 enter C-c C-v t again to complete the tangling (possible now because project directories have been created)
-# 4 open the new file 'analysis/go.r' and evaluate the code chunks
+# 4 open the new file 'analysis/go.r' and evaluate the code chunks, also do the NMMAPSliteEgGam.r
 # 5 open the new file 'analysis/reports/letters.tex' and run LaTeX to produce the report (if the images to include in First and Second letter sections below do exist then set eval to yes and uncomment the include figures chunk)
 # 6 in Emacs enter C-c C-e l (Lowercase L), accept the invitation to evaluate 2 chunks of R code that copy the plots to the root directory and include in the tex file
 
@@ -24,6 +24,9 @@
   if (!require(reshape)) install.packages('reshape', repos='http://cran.csiro.au'); require(reshape)
   if (!require(plyr)) install.packages('plyr', repos='http://cran.csiro.au'); require(plyr)
   if (!require(ggplot2)) install.packages('ggplot2', repos='http://cran.csiro.au'); require(ggplot2)
+  if(!require(mgcv)) install.packages('mgcv', repos='http://cran.csiro.au');require(mgcv);
+  require(splines)
+  if(!require(NMMAPSlite)) install.packages('NMMAPSlite', repos='http://cran.csiro.au');require(NMMAPSlite)
   rootdir <- getwd()  
 #+end_src
 * The Compendium concept
@@ -40,7 +43,7 @@ I'm also following the orgmode technique of Schulte et al (2012) \cite{Schulte}
 
 * The R code that produced this report
 
-I support the philosophy of Reproducible Research http://www.sciencemag.org/content/334/6060/1226.full, and where possible I provide data and code in the statistical software R that will allow analyses to be reproduced.  This document is prepared automatically from the associated Sweave (RNW) file.  If you do not have access to the RNW file please contact me.
+I support the philosophy of Reproducible Research http://www.sciencemag.org/content/334/6060/1226.full, and where possible I provide data and code in the statistical software R that will allow analyses to be reproduced.  This document is prepared automatically from the associated Emacs Orgmode file.  If you do not have access to the Orgmode file please contact me.
 #+name:copyright
 #+begin_src R :session *R* :tangle init.r :exports none :eval no
 cat('
@@ -87,7 +90,7 @@ By Josh Reich.  I've also followed to prepare this demo using the tutorial and d
 
 * The Peng NMMAPSlite approach
 \section{The Peng NMMAPSlite approach}
-The other approach I followed was that of Roger Peng from Johns Hopkins and his NMMAPSlite R package.  Especially the function
+The other approach I followed was that of Roger Peng from Johns Hopkins and his NMMAPSlite R package \cite{Peng2004}.  Especially the function
 \begin{verbatim}
 readCity(name, collapseAge = FALSE, asDataFrame = TRUE)
 \end{verbatim}
@@ -182,7 +185,7 @@ data_loading: on
 munging: off
 logging: off
 load_libraries: on
-libraries: reshape, plyr, ggplot2, stringr, lubridate
+libraries: reshape, plyr, ggplot2, stringr, lubridate, splines, mgcv, NMMAPSlite
 as_factors: on
 data_tables: off
 #+end_src
@@ -282,6 +285,7 @@ Write the first analysis script into a file in \textbf{src}
   plot2 <- ggplot(second.letter.counts, aes(x = V1)) + 
     geom_density()
   ggsave(file.path('reports', 'plot2.pdf'))
+  dev.off()
 #+end_src
 
 And now run it (I do this from a main `overview' script).
@@ -470,6 +474,111 @@ Let's take a look at the project using RStudio.
 #\caption{Rstudio.pdf}
 #\label{fig:Rstudio.pdf}
 #\end{figure}
+* NMMAPSlite
+\section{NMMAPSlite}
+
+To fit a poisson GAM following the general apprach from the NMMAPS paradigm.
+\begin{eqnarray*}
+log(O_{i})  & = & s(temp_{i}) + s(dewpoint_{i})  \\	
+& &   + s(Time, df = 7 \times YearsOfData, fixed = T) \\
+& &   + offset(log(Pop_{i}))\\
+\end{eqnarray*}
+\noindent Where:\\\\
+\indent $O_{i}$ = Counts of health outcome on $day_{i}$ \\
+\indent $s(temp_{i}) + s(dewpoint_{i})$ = Non-parametric smooths of temperature and dewpoint on $day_{i}$ \\
+\indent $s(Time, df = 7 \times YearsOfData, fixed = T)$ = parametric smooth of time (days) to adjust for time varying confounders \\
+\indent $Pop_{i}$ = interpolated population on $day_{i}$ \\
+#+name:NMMAPSliteEgGAM
+#+begin_src R :session *R* :tangle analysis/src/NMMAPSliteEgGAM.r :exports none :eval no
+  # func
+  initDB('data')
+  
+  # load
+  cities <- getMetaData('cities')
+  head(cities)
+  cit <- 'chic'
+  subset(cities, city == cit)
+  data <- readCity(cit)
+  data$yy <- substr(data$date,1,4)
+  
+  # clean
+  png('reports/NMMAPSliteEgGAM-qc.png', res = 150, height = 1000, width = 1000)
+  par(mfrow=c(2,1))
+  with(subset(data, agecat == '75p'), plot(date, tmax))
+  with(subset(data, agecat == '75p'), plot(date, cvd, type ='l', col = 'grey'))
+  with(subset(data, agecat == '75p'), lines(lowess(date, cvd, f = 0.015)))
+  dev.off()
+  
+  # do
+  numYears<-length(names(table(data$yy)))
+  df <- subset(data, agecat == '75p')
+  df$time <- as.numeric(df$date)
+  fit <- gam(cvd ~ s(tmax) + s(dptp) + s(time, k= 7*numYears, fx=T), data = df, family = poisson)
+  
+  # report
+  png('reports/NMMAPSliteEgGAM-exposureResponse.png', res = 150, height = 1000, width = 1000)
+  par(mfrow=c(2,2))
+  plot(fit)
+  dev.off()
+  
+  # archive
+  cache('df')
+  cache('numYears')
+#+end_src
+
+* NMMAPSlite readCity()
+#+name:NMMAPSliteEgGAM-qc.png copy
+#+begin_src R :session *Rroot* :exports none :eval no
+  file.copy('analysis/reports/NMMAPSliteEgGAM-qc.png', 'NMMAPSliteEgGAM-qc.png')
+#+end_src
+
+# \begin{figure}[!h]
+# \centering
+# \includegraphics[width=.6\textwidth]{NMMAPSliteEgGAM-qc.png}
+# \caption{NMMAPSliteEgGAM-qc.png}
+# \label{fig:NMMAPSliteEgGAM-qc.png}
+# \end{figure}
+* NMMAPSlite GAM
+#+name:NMMAPSliteEgGAM-exposureResponse.png copy
+#+begin_src R :session *Rroot* :exports none :eval no
+  file.copy('analysis/reports/NMMAPSliteEgGAM-exposureResponse.png', 'NMMAPSliteEgGAM-exposureResponse.png')
+#+end_src
+
+# \begin{figure}[!h]
+# \centering
+# \includegraphics[width=.6\textwidth]{NMMAPSliteEgGAM-exposureResponse.png}
+# \caption{NMMAPSliteEgGAM-exposureResponse.png}
+# \label{fig:NMMAPSliteEgGAM-exposureResponse.png}
+# \end{figure}
+* NMMAPSlite ad hoc extension
+\section{NMMAPSlite ad hoc extension}
+So now if a user wants to do the analysis differently with the same data they can.
+#+name:NMMAPSliteEgGAM
+#+begin_src R :session *R* :tangle analysis/src/NMMAPSliteEgGAM-extension.r :eval no 
+  require(ProjectTemplate)
+  load.project()
+  ls()
+  # fit without seasonal cycle (df = 1)
+  fit <- gam(cvd ~ s(tmax) + s(dptp) + 
+    s(time, k= numYears/numYears, fx=T), 
+    data = df, family = poisson)
+  png('reports/NMMAPSliteEgGAM-exposureResponse-extension.png', res = 150, height = 1000, width = 1000)
+  par(mfrow=c(2,2))
+  plot(fit)
+  dev.off()
+#+end_src
+* NMMAPSlite GAM extension
+#+name:NMMAPSliteEgGAM-exposureResponse-extension.png copy
+#+begin_src R :session *Rroot* :exports none :eval no
+  file.copy('analysis/reports/NMMAPSliteEgGAM-exposureResponse-extension.png', 'NMMAPSliteEgGAM-exposureResponse-extension.png')
+#+end_src
+
+# \begin{figure}[!h]
+# \centering
+# \includegraphics[width=.6\textwidth]{NMMAPSliteEgGAM-exposureResponse-extension.png}
+# \caption{NMMAPSliteEgGAM-exposureResponse-extension.png}
+# \label{fig:NMMAPSliteEgGAM-exposureResponse-extension.png}
+# \end{figure}
 * Conclusions
 The Emacs Orgmode file is the compendium from which the whole analysis can be re-created.
 The upshot is that once I have developed the project's main \emph{\textbf{.org}} file and completed the analysis I can send it (and only it) to another analyst and if they run it (using Emacs) it should get the project to exactly the same state that it was in when I left it, ready for reproduction or extension.
@@ -484,8 +593,8 @@ To see a copy of the org file for this demo go to https://github.com/ivanhanigan
 # The end user of my work may not want to use any of these (apart from R), so I don't want to include too many extra things.
 * References
 \section{References}
-#\bibliographystyle{unsrt}
-#\bibliography{I:/references/library}
+# \bibliographystyle{unsrt}
+# \bibliography{I:/references/library}
 
 \begin{thebibliography}{1}
 
@@ -500,6 +609,11 @@ E~Schulte, D~Davison, T~Dye, and C~Dominik.
 \newblock {A Multi-Language Computing Environment for Literate Programming and
   Reproducible Research}.
 \newblock {\em Journal of Statistical Software}, 46(3), 2012.
+
+\bibitem{Peng2004}
+RD~Peng and LJ~Welty.
+\newblock {The NMMAPSdata Package}.
+\newblock {\em R News}, 4(2):10--14, 2004.
 
 \end{thebibliography}
 # notes for presentation
