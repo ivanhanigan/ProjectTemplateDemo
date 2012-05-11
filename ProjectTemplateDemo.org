@@ -282,6 +282,7 @@ Write the first analysis script into a file in \textbf{src}
   plot2 <- ggplot(second.letter.counts, aes(x = V1)) + 
     geom_density()
   ggsave(file.path('reports', 'plot2.pdf'))
+  dev.off()
 #+end_src
 
 And now run it (I do this from a main `overview' script).
