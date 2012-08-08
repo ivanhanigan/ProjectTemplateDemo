@@ -486,8 +486,11 @@ log(O_{i})  & = & s(temp_{i}) + s(dewpoint_{i})  \\
 #+name:NMMAPSliteEgGAM
 #+begin_src R :session *R* :tangle analysis/src/NMMAPSliteEgGAM.r :exports none :eval no
   # func
+  install.packages('NMMAPSlite')
+  require(NMMAPSlite)
   initDB('data')
-  
+  install.packages('mgcv')
+  require(mgcv)
   # load
   cities <- getMetaData('cities')
   head(cities)
@@ -519,6 +522,7 @@ log(O_{i})  & = & s(temp_{i}) + s(dewpoint_{i})  \\
   # archive
   cache('df')
   cache('numYears')
+  
 #+end_src
 
 * NMMAPSlite readCity()

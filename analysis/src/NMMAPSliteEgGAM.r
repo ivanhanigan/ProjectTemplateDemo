@@ -1,7 +1,10 @@
 
 # func
+install.packages('NMMAPSlite')
+require(NMMAPSlite)
 initDB('data')
-
+install.packages('mgcv')
+require(mgcv)
 # load
 cities <- getMetaData('cities')
 head(cities)
