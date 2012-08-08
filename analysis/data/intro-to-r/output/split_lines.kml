@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<kml xmlns="http://earth.google.com/kml/2.0">
+<Document><Folder><name>lines</name>
+  <Placemark>
+      <description>
+<![CDATA[
+      <b>origID:</b> <i>1</i><br />
+      <b>newID:</b> <i>x1.1</i><br />
+]]></description>
+      <LineString><coordinates>2.240230905861456,13.859591474245114 4.61607460035524,14.267939609236233 7.400266429840142,14.379307282415629 10.667051509769093,14.379307282415629</coordinates></LineString>
+  <Style><LineStyle><color>ff0000ff</color></LineStyle>  <PolyStyle><fill>0</fill></PolyStyle></Style>
+  </Placemark>
+  <Placemark>
+      <description>
+<![CDATA[
+      <b>origID:</b> <i>1</i><br />
+      <b>newID:</b> <i>x1.2</i><br />
+]]></description>
+      <LineString><coordinates>10.667051509769093,14.379307282415629 13.451243339253995,13.265630550621669 15.641474245115452,12.040586145648312 18.12868561278863,13.970959147424511 19.539342806394316,15.530106571936056</coordinates></LineString>
+  <Style><LineStyle><color>ff0000ff</color></LineStyle>  <PolyStyle><fill>0</fill></PolyStyle></Style>
+  </Placemark>
+  <Placemark>
+      <description>
+<![CDATA[
+      <b>origID:</b> <i>1</i><br />
+      <b>newID:</b> <i>x1.3</i><br />
+]]></description>
+      <LineString><coordinates>19.539342806394316,15.530106571936056 20.393161634103016,15.270248667850797 20.949999999999999,13.154262877442273 21.321225577264652,11.81785079928952</coordinates></LineString>
+  <Style><LineStyle><color>ff0000ff</color></LineStyle>  <PolyStyle><fill>0</fill></PolyStyle></Style>
+  </Placemark>
+  <Placemark>
+      <description>
+<![CDATA[
+      <b>origID:</b> <i>1</i><br />
+      <b>newID:</b> <i>x2.1</i><br />
+]]></description>
+      <LineString><coordinates>2.091740674955595,11.372380106571935 2.462966252220249,8.959413854351686 2.871314387211367,7.363143872113676 4.504706927175843,7.103285968028419 4.801687388987566,8.179840142095914 6.026731793960923,10.444316163410301 6.6949378330373,11.149644760213143</coordinates></LineString>
+  <Style><LineStyle><color>ff0000ff</color></LineStyle>  <PolyStyle><fill>0</fill></PolyStyle></Style>
+  </Placemark>
+  <Placemark>
+      <description>
+<![CDATA[
+      <b>origID:</b> <i>1</i><br />
+      <b>newID:</b> <i>x2.2</i><br />
+]]></description>
+      <LineString><coordinates>6.6949378330373,11.149644760213143 8.068472468916518,11.001154529307282 8.068472468916518,9.81323268206039 8.625310834813499,7.919982238010657 9.25639431616341,6.806305506216695 10.518561278863231,7.288898756660745 11.186767317939609,8.551065719360567 11.706483126110124,9.961722912966252 12.226198934280639,10.741296625222024</coordinates></LineString>
+  <Style><LineStyle><color>ff0000ff</color></LineStyle>  <PolyStyle><fill>0</fill></PolyStyle></Style>
+  </Placemark>
+  <Placemark>
+      <description>
+<![CDATA[
+      <b>origID:</b> <i>1</i><br />
+      <b>newID:</b> <i>x2.3</i><br />
+]]></description>
+      <LineString><coordinates>12.226198934280639,10.741296625222024 13.488365896980461,10.704174067495559 13.89671403197158,9.479129662522201 14.564920071047956,7.919982238010657 15.270248667850797,6.6949378330373 16.049822380106569,7.066163410301953 16.866518650088807,8.662433392539963 17.608969804618116,10.481438721136767 18.499911190053286,10.592806394316163</coordinates></LineString>
+  <Style><LineStyle><color>ff0000ff</color></LineStyle>  <PolyStyle><fill>0</fill></PolyStyle></Style>
+  </Placemark>
+  <Placemark>
+      <description>
+<![CDATA[
+      <b>origID:</b> <i>1</i><br />
+      <b>newID:</b> <i>x2.4</i><br />
+]]></description>
+      <LineString><coordinates>18.499911190053286,10.592806394316163 19.019626998223799,9.033658969804618</coordinates></LineString>
+  <Style><LineStyle><color>ff0000ff</color></LineStyle>  <PolyStyle><fill>0</fill></PolyStyle></Style>
+  </Placemark>
+</Folder></Document></kml>

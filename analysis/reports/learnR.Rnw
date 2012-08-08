@@ -1,0 +1,175 @@
+
+% NB in Rstudio might have to go tools/options and tick `Invoke compiler via texi2dvi script'
+\documentclass[a4paper]{article}
+\usepackage{fancyhdr} %For headers and footers
+\pagestyle{fancy} %For headers and footers
+\usepackage{lastpage} %For getting page x of y
+\usepackage{float} %Allows the figures to be positioned and formatted nicely
+\floatstyle{boxed} %using this
+\restylefloat{figure} %and this command
+\usepackage{url} %Formatting of yrls
+\usepackage{verbatim}
+\usepackage{cite} 
+\usepackage{hyperref} 
+%Define all the headers and footers
+\lhead{}
+\chead{NCEPH Working Paper}
+\rhead{}
+\lfoot{Ivan C Hanigan}
+\cfoot{\today}
+\rfoot{\thepage\ of \pageref{LastPage}}
+\usepackage{Sweave}
+\begin{document}
+\SweaveOpts{concordance=TRUE}
+%\SweaveOpts{concordance=TRUE}
+%\input{learnR-concordance}
+\title{Example Sweave Document}
+\author{Ivan C. Hanigan$^{1}$}
+\date {\today}
+\maketitle
+\begin{itemize}
+\item [$^1$] National Centre for Epidemiology and Population Health, \\Australian National University.
+\end{itemize}
+
+\setcounter{page}{1}
+\pagenumbering{roman}
+\tableofcontents 
+\pagenumbering{arabic}
+\setcounter{page}{1}
+
+\section{Introduction}
+This is an introduction to some resources that are useful for learning R.  
+\section{The R code that produced this report}
+It is important to appreciate that R is free and open source software.  This means that any code you write can be viewed and modified by others.  In some cases we need to protect our Intellectual Property and the following statement is an attempt to ascribe copyright to our work, even though it remains open source.
+
+``I support the philosophy of Reproducible Research \cite{Peng2011}, and where possible I provide data and code in the statistical software R that will allow analyses to be reproduced.  This document is prepared automatically from the associated Sweave (RNW) file.  If you do not have access to the RNW file please contact me.''
+<<eval=FALSE,echo=FALSE,keep.source=TRUE>>=
+cat('
+ #######################################################################
+ ## The R code is free software; please cite this paper as the source.  
+ ## Copyright 2012, Ivan C Hanigan <ivan.hanigan@gmail.com> 
+ ## This program is free software; you can redistribute it and/or modify
+ ## it under the terms of the GNU General Public License as published by
+ ## the Free Software Foundation; either version 2 of the License, or
+ ## (at your option) any later version.
+ ## 
+ ## This program is distributed in the hope that it will be useful,
+ ## but WITHOUT ANY WARRANTY; without even the implied warranty of
+ ## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ ## GNU General Public License for more details.
+ ## Free Software
+ ## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+ ## 02110-1301, USA
+ #######################################################################
+')
+@ 
+
+
+\subsection{func}
+I'll use the following packages:
+<<eval=TRUE,echo=TRUE,keep.source=TRUE>>=  
+if(!require(xtable)) install.packages('xtable', repos = 'http://cran.csiro.au')
+require(xtable)
+#require(ggplot2)
+#require(ProjectTemplate)
+@
+<<eval=FALSE,echo=FALSE,keep.source=TRUE>>=  
+create.project('analysis', minimal = TRUE)
+dir.create('analysis/reports')
+# the plan
+@
+\subsection{Some Code}
+<<eval=TRUE,echo=TRUE,keep.source=TRUE>>=
+x<-rnorm(100,10,5)
+y<-rnorm(100,20,15)
+fit <- lm(y~x)
+summary(fit)
+@
+Using the xtable package allows results to be displyed in tables and has built in support for some R objects, so summrising the linear fit above in Table ~\ref{ATable}.
+<<eval=TRUE,echo=FALSE,results=tex>>=
+require(xtable)
+xtable(fit, caption="Example Table",digits=4,table.placement="H",label="ATable")
+@
+\subsection{A Plot}
+ 
+Plots intergrate easily, using the \LaTeX float package as can be seen in figure ~\ref{aPlot.png}.  However I like to make them as pngs and then include.
+
+<<eval=TRUE,echo=FALSE,keep.source=TRUE>>=  
+png('aPlot.png', res=200,width = 600, height = 600)
+plot(x,y,main="Example Plot",xlab="X Variable",ylab="Y Variable")
+abline(fit,col="Red")
+dev.off()
+@
+\begin{figure}[!h]
+\centering
+\includegraphics[width=\textwidth]{aPlot.png}
+\caption{aPlot.png}
+\label{fig:aPlot.png}
+\end{figure}
+\clearpage
+\section{Remembering the points}
+This blog post \url{http://www.win-vector.com/blog/2012/04/how-to-remember-point-shape-codes-in-r/} says:
+
+I suspect I am not unique in not being able to remember how to control the point shapes in R. Part of this is a documentation problem: no package ever seems to write the shapes down. All packages just use the usual set that derives from S-Plus and was carried through base-graphics, to grid, lattice and ggplot2. The quickest way out of this is to know how to generate an example plot of the shapes quickly. We show how to do this in ggplot2. This is trivial- but you get tired of not having it immediately available.
+
+
+I like it but it is not as complate as the plot shown in Figure \ref{fig:pchopts.png} from the `R for Beginners' document by Emmanuel Paradis \cite{Paradis2002}.  I also find I often get disoriented using ggplot2.
+
+<<eval=TRUE, echo=FALSE>>=
+# it had to be fixed
+# sum <- ggplot()
+# for(i in 1:25) {
+#    sum <- sum +
+#       geom_point(data=data.frame(x=c(i)),aes(x=x,y=x),shape=i)
+# }
+# sum
+# but this still doesn't work properly
+# ggplot(data=data.frame(x=as.factor(1:16))) + geom_point(aes(x=x,y=x)) +
+#     facet_wrap(~x,scales='free')
+# I like base graphics anyway
+png('pchopts.png')
+par(mfrow=c(3,10), mar=c(0,0,2,0))
+for(i in c(1:25)){
+ plot(1,1,pch=i, axes=F, cex = 3, col = 'blue', bg = 'yellow')
+ title(i)
+ }
+for(i in c("*", "?", ".", "X", "a")){
+ plot(1,1,pch=i, axes=F, cex = 3, col = 'blue', bg = 'yellow')
+ title(i)
+ }
+dev.off()
+@
+\begin{figure}[!h]
+\centering
+\includegraphics[width=\textwidth]{pchopts.png}
+\caption{pchopts.png}
+\label{fig:pchopts.png}
+\end{figure}
+
+
+\section{Conclusion}
+In conclusion, sweave rocks.
+
+
+\begin{thebibliography}{1}
+\bibitem{Paradis2002}
+Emmanuel Paradis.
+\newblock {R for Beginners}.
+\newblock 2002.
+
+\bibitem{Peng2011}
+Roger~D Peng.
+\newblock {Reproducible research in computational science.}
+\newblock {\em Science (New York, N.Y.)}, 334(6060):1226--7, December 2011.
+
+\end{thebibliography}
+
+\section{System State}
+<<eval=TRUE,echo=TRUE,keep.source=TRUE>>=
+sessionInfo()
+@
+
+
+
+
+\end{document}
