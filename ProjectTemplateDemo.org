@@ -561,7 +561,7 @@ So now if a user wants to do the analysis differently with the same data they ca
 # \label{fig:NMMAPSliteEgGAM-exposureResponse-extension.png}
 # \end{figure}
 * Other case studies
-** learnR
+** COMMENT learnR
 #+name:learnR.Rnw
 #+begin_src R :session *R* :tangle analysis/reports/learnR.Rnw :exports none :eval no
 % NB in Rstudio might have to go tools/options and tick `Invoke compiler via texi2dvi script'
@@ -741,7 +741,7 @@ sessionInfo()
 
 #+end_src
 
-** TODO introducing R objects
+** COMMENT introducing R objects
 #+name:introducingRobjects
 #+begin_src R :session *R* :tangle analysis/reports/introducingRobjects.r :exports none :eval no
   #Introduction to R objects
