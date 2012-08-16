@@ -1,12 +1,12 @@
 
 #################################################################
-# ~/NMMAPSlite-intro2regression.r
+# ~/NMMAPSlite-tute.r
 # author:
 # ihanigan
 # date:
 # 2012-08-16
 # description:
-# unabridged tute to demo R codes for multiple regression modelling
+# a tute to demo R codes for multiple regression modelling
 #################################################################
 
 
@@ -29,48 +29,15 @@ city <- subset(cities, cityname == city_i)$city
 data <- readCity(city)
 data$yy <- substr(data$date,1,4)
 
-######################################################
-# check
-par(mfrow=c(2,1), mar=c(4,4,3,1))
-with(subset(data[,c(1,15:25)], agecat == '75p'),
-  plot(date, tmax)
- )
-with(subset(data[,c(1,4,15:25)], agecat == '75p'),
-        plot(date, cvd, type ='l', col = 'grey')
-        )
-with(subset(data[,c(1,4,15:25)], agecat == '75p'),
-        lines(lowess(date, cvd, f = 0.015))
-        )
-# I am worried about that outlier
-data$date[which(data$cvd > 100)]
-# [1] "1995-07-15" "1995-07-16"
-
-######################################################
-# do standard NMMAPS timeseries poisson GAM model
-numYears<-length(names(table(data$yy)))
-df <- subset(data, agecat == '75p')
-df$time <- as.numeric(df$date)
-fit <- gam(cvd ~ s(pm10tmean) + s(tmax) + s(dptp) + s(time, k= 7*numYears, fx=T), data = df, family = poisson)
-# plot of response functions
-par(mfrow=c(2,2))
-plot(fit)
-dev.off()
-
-######################################################
-# some diagnostics
-summary(fit)
-# note the R-sq.(adj) =   0.21
-gam.check(fit)
-# note the lack of a leverage plot.  for that we need glm
-
-######################################################
-# do same model as glm
+######################################################  
+# do NMMAPS model as glm
 fit2 <- glm(cvd ~ pm10tmean + ns(tmax, df = 8) + ns(dptp, df = 4) + ns(time, df = 7*numYears), data = df, family = poisson)
 # plot responses
 par(mfrow=c(2,2))
 termplot(fit2, se =T)
 dev.off()
 
+######################################################
 # plot prediction
 df$predictedCvd <- predict(fit2, df, 'response')
 # baseline is given by the intercept
@@ -103,12 +70,14 @@ RsquaredGlm(fit2)
 # 0.51
 # the difference is presumably due to the arguments about how to account for unexplainable variance in the poisson distribution?
 
+######################################################  
 # significance of spline terms
 drop1(fit2, test='Chisq')
 # also note AIC. best model includes all of these terms
 # BIC can be computed instead (but still labelled AIC) using
 drop1(fit2, test='Chisq', k = log(nrow(data)))
 
+######################################################
 # diagnostic plots
 par(mfrow=c(2,2))
 plot(fit2)
@@ -130,6 +99,7 @@ plot(fit2)
 dev.off()
 # looks like a well behaved model now.
 
+######################################################  
 # if we were still worried about any high leverage values we could identify these with
 df3 <- na.omit(df2[,c('cvd','pm10tmean','tmax','dptp','time')])
 df3$hatvalue <- hatvalues(fit2)
@@ -145,6 +115,7 @@ abline(0,0)
 segments(hatThreshold,-2,hatThreshold,15)
 dev.off()
 
+######################################################
 fit3 <- glm(cvd ~ pm10tmean + ns(tmax, df = 8) + ns(dptp, df = 4) + ns(time, df = 7*numYears), data = subset(df3, hatvalue < hatThreshold), family = poisson)
 par(mfrow=c(2,2))
 termplot(fit3, se = T)
@@ -152,6 +123,7 @@ termplot(fit3, se = T)
 plot(fit3)
 # no better
 
+######################################################  
 # or we could go nuts with a whole number of ways of estimating influence
 # check all influential observations
 infl <- influence.measures(fit2)
@@ -191,15 +163,15 @@ c=deviance(fit2)/df.residual(fit2)
 QAIC.1=-2*logLik(fit2)/c + 2*(length(coef(fit2)) + 1)
 QAIC.1
 
+######################################################
 # Actually lets use QAICc which is more conservative about parameters,
 QAICc.1=-2*logLik(fit2)/c + 2*(length(coef(fit2)) + 1) + 2*(length(coef(fit2)) + 1)*(length(coef(fit2)) + 1 + 1)/(nrow(na.omit(df[,c('cvd','pm10tmean','tmax','dptp','time')]))- (length(coef(fit2))+1)-1)
 QAICc.1
 
 
 ######################################################
-# the following is old work, some may be interesting
+# the following is old work - ignore?
 # such as the use of sinusoidal wave instead of smooth function of time
-
 
 # # sine wave
 # timevar <- as.data.frame(names(table(df$date)))
