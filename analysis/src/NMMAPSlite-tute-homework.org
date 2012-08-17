@@ -4,21 +4,25 @@
 #+LaTeX_CLASS: article
 #+LaTeX_CLASS_OPTIONS: [a4paper]
 -----
+#+name:init
+#+begin_src R :session *R* :tangle NMMAPSlite-tute-homework.r :exports none :eval no
+  setwd('analysis')
+#+end_src
 
 * Introduction
  a tute to demo R codes for multiple regression modelling
 
  homework is to get the RR and 95 percent CIs for pm10tmean
-* Tools
+* Func
 #+name:tools
-#+begin_src R :session *R* :tangle main.R :eval no
+#+begin_src R :session *R* :tangle NMMAPSlite-tute-homework.r :eval no
   require(splines)
   if(!require(NMMAPSlite)) install.packages('NMMAPSlite');require(NMMAPSlite)
   initDB('data')
 #+end_src
 * Load
 #+name:load
-#+begin_src R :session *R* :tangle main.R :eval no
+#+begin_src R :session *R* :tangle NMMAPSlite-tute-homework.r :eval no
   
   cities <- getMetaData('cities')
   head(cities)
@@ -35,14 +39,14 @@
 #+end_src
 * Do-modelling
 #+name:do
-#+begin_src R :session *R* :tangle main.R :eval no
+#+begin_src R :session *R* :tangle NMMAPSlite-tute-homework.r :eval no
   fit2 <- glm(cvd ~ agecat + pm10tmean +
    ns(tmax, df = 8) + ns(dptp, df = 4) + ns(time, df = 7*numYears),
    data = data, family = poisson)
 #+end_src
 * COMMENT Clean-model checking
 #+name:clean
-#+begin_src R :session *R* :tangle main.R :exports none :eval no
+#+begin_src R :session *R* :tangle NMMAPSlite-tute-homework.r :exports none :eval no
 
   # plot responses
   par(mfrow=c(2,2))
@@ -53,10 +57,40 @@
   termplot(fit2, se =T,terms='ns(time, df = 7 * numYears)')
   dev.off()
 #+end_src
+* COMMENT Func-cround
+#+name:cround
+#+begin_src R :session *R* :tangle NMMAPSlite-tute-homework.r :exports none :eval no
+cround = function(x,n){
+# R documentation for round says for rounding off a 5, the IEC 60559 standard is expected to be used, go to the even digit.
+# We think most people expect numbers ending in .5 to round up, not the nearest even digit.
+# We decided that we'd round up from .5
+# http://alandgraf.blogspot.com.au/2012/06/rounding-in-r.html
+# It is a little comforting knowing that there is a logic behind it and that R is abiding to some standard. 
+# But why isn't MATLAB abiding by the same standard? Also, I think most people expect numbers ending in .5 to round up, not the nearest even digit.  
+# from comments
+# Andrew wrote "Also, I think most people expect numbers ending in .5 to round up (not the nearest even digit)". This kind of rounding is in German #called "kaufmännische Rundung" (rounding in commerce). For this purpose I use the following function:
+# Definition of a function for "rounding in commerce"
+vorz = sign(x)
+z = abs(x)*10^n
+z = z + 0.5
+z = trunc(z)
+z = z/10^n
+z*vorz
+}
+
+#+end_src
+* COMMENT Func-significant digits
+#+begin_src R :session *R* :tangle NMMAPSlite-tute-homework.r :exports none :eval no
+fmtSignif <- function(x,signifpl=signifpls){
+ # a function to set decimal places with trailing zero for labels
+ sapply(signif(as.numeric(x),signifpl), sprintf, fmt="%#.3g")
+}
+#+end_src
+
 * do-report RRs
 Now we can get a matrix of the coefficients and standard errors.
 #+name:do-report RRs 1
-#+begin_src R :session *R* :tangle main.R :eval no
+#+begin_src R :session *R* :tangle NMMAPSlite-tute-homework.r :eval no
 modout <- summary(fit2)$coeff
 #+end_src
 So we need to use the square brackets to select the right rows and columns and calculate:
@@ -66,17 +100,24 @@ $95CI_{lower} = e^{(\beta - 1.96 \times standardError)}$ \\
 $95CI_{upper} = e^{(\beta + 1.96 \times standardError)}$ \\
 
 #+name:answer
-#+begin_src R :session *R* :tangle main.R :exports none :eval no
-modout$RR <- exp(modout[,2])
-modout$RRlci <- exp(modout[,2] - 1.96 * modout[,3])
-modout$RRuci <- exp(modout[,2] + 1.96 * modout[,3])
+#+begin_src R :session *R* :tangle NMMAPSlite-tute-homework.r :exports none :eval no
+i <- which(row.names(modout) == 'pm10tmean')
+RR <- exp(modout[i,2])
+RRlci <- exp(modout[i,2] - 1.96 * modout[i,3])
+RRuci <- exp(modout[i,2] + 1.96 * modout[i,3])
+#+end_src
+#+name:show RR in doc
+#+begin_src R :session *R* :tangle NMMAPSlite-tute-homework.r :exports none :eval yes
+print(paste('RR = ',fmtSignif(RR,2),' (',cround(RRlci,2),', ',cround(RRuci,2),')',sep=''))
 #+end_src
 
 
+: RR = 1.00 (0.08, 13.28)
+
 * COMMENT func-collectResults
 #+name:func
-#+begin_src R :session *R* :tangle main.R :exports none :eval no
- 
+#+begin_src R :session *R* :tangle NMMAPSlite-tute-homework.r :exports none :eval no
+   
   ######################################################
   # get coefficients and RRs
   collectResults <- function(fit, name, covar, modeloutputsTable = NA){
@@ -112,8 +153,8 @@ modout$RRuci <- exp(modout[,2] + 1.96 * modout[,3])
 #+end_src
 * COMMENT do-report RRs 2
 #+name:do-report
-#+begin_src R :session *R* :tangle main.R :exports none :eval no
- 
+#+begin_src R :session *R* :tangle NMMAPSlite-tute-homework.r :exports none :eval no
+   
   ######################################################
   # get the RRs
   results_out <- as.data.frame(matrix(nrow=0,ncol=11))
@@ -137,3 +178,7 @@ whoami
 - [ ] one
 - [X] two
 - [ ] three
+
+* TODO list
+- need to find out if there is already a function to do the RR and CI
+- need to find out best method for rounding
