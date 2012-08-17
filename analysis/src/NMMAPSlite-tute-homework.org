@@ -83,7 +83,7 @@ z*vorz
 #+begin_src R :session *R* :tangle NMMAPSlite-tute-homework.r :exports none :eval no
 fmtSignif <- function(x,signifpl=signifpls){
  # a function to set decimal places with trailing zero for labels
- sapply(signif(as.numeric(x),signifpl), sprintf, fmt="%#.3g")
+ sapply(signif(as.numeric(x),signifpl), sprintf, fmt=paste("%#.",signifpls,"g",sep=""))
 }
 #+end_src
 
@@ -102,17 +102,18 @@ $95CI_{upper} = e^{(\beta + 1.96 \times standardError)}$ \\
 #+name:answer
 #+begin_src R :session *R* :tangle NMMAPSlite-tute-homework.r :exports none :eval no
 i <- which(row.names(modout) == 'pm10tmean')
-RR <- exp(modout[i,2])
-RRlci <- exp(modout[i,2] - 1.96 * modout[i,3])
-RRuci <- exp(modout[i,2] + 1.96 * modout[i,3])
+RR <- exp(modout[i,1])
+RRlci <- exp(modout[i,1] - 1.96 * modout[i,2])
+RRuci <- exp(modout[i,1] + 1.96 * modout[i,2])
 #+end_src
 #+name:show RR in doc
-#+begin_src R :session *R* :tangle NMMAPSlite-tute-homework.r :exports none :eval yes
-print(paste('RR = ',fmtSignif(RR,2),' (',cround(RRlci,2),', ',cround(RRuci,2),')',sep=''))
+#+begin_src R :session *R* :tangle NMMAPSlite-tute-homework.r :exports none :eval no
+  print(paste('RR = ',fmtSignif(RR,5,5),' (',fmtSignif(RRlci,5,5),', ',fmtSignif(RRuci,5,5),')',sep=''))
 #+end_src
 
 
-: RR = 1.00 (0.08, 13.28)
+: RR = 1.0002 (0.99991, 1.0004)
+
 
 * COMMENT func-collectResults
 #+name:func

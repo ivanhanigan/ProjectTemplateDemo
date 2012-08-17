@@ -50,17 +50,17 @@ z*vorz
 
 fmtSignif <- function(x,signifpl=signifpls){
  # a function to set decimal places with trailing zero for labels
- sapply(signif(as.numeric(x),signifpl), sprintf, fmt="%#.3g")
+ sapply(signif(as.numeric(x),signifpl), sprintf, fmt=paste("%#.",signifpls,"g",sep=""))
 }
 
 modout <- summary(fit2)$coeff
 
 i <- which(row.names(modout) == 'pm10tmean')
-RR <- exp(modout[i,2])
-RRlci <- exp(modout[i,2] - 1.96 * modout[i,3])
-RRuci <- exp(modout[i,2] + 1.96 * modout[i,3])
+RR <- exp(modout[i,1])
+RRlci <- exp(modout[i,1] - 1.96 * modout[i,2])
+RRuci <- exp(modout[i,1] + 1.96 * modout[i,2])
 
-print(paste('RR = ',fmtSignif(RR,2),' (',cround(RRlci,2),', ',cround(RRuci,2),')',sep=''))
+print(paste('RR = ',fmtSignif(RR,5,5),' (',fmtSignif(RRlci,5,5),', ',fmtSignif(RRuci,5,5),')',sep=''))
 
 ######################################################
 # get coefficients and RRs
