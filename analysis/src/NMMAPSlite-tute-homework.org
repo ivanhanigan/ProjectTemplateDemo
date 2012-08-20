@@ -57,28 +57,6 @@
   termplot(fit2, se =T,terms='ns(time, df = 7 * numYears)')
   dev.off()
 #+end_src
-* COMMENT Func-cround
-#+name:cround
-#+begin_src R :session *R* :tangle NMMAPSlite-tute-homework.r :exports none :eval no
-  cround = function(x,n){
-  # R documentation for round says for rounding off a 5, the IEC 60559 standard is expected to be used, go to the even digit.
-  # We think most people expect numbers ending in .5 to round up, not the nearest even digit.
-  # We decided that we'd round up from .5
-  # http://alandgraf.blogspot.com.au/2012/06/rounding-in-r.html
-  # It is a little comforting knowing that there is a logic behind it and that R is abiding to some standard. 
-  # But why isn't MATLAB abiding by the same standard? Also, I think most people expect numbers ending in .5 to round up, not the nearest even digit.  
-  # from comments
-  # Andrew wrote "Also, I think most people expect numbers ending in .5 to round up (not the nearest even digit)". This kind of rounding is in German #called "kaufmännische Rundung" (rounding in commerce). For this purpose I use the following function:
-  # Definition of a function for "rounding in commerce"
-  vorz = sign(x)
-  z = abs(x)*10^n
-  z = z + 0.5
-  z = trunc(z)
-  z = z/10^n
-  z*vorz
-  }
-  
-#+end_src
 * COMMENT Func-significant digits
 #+begin_src R :session *R* :tangle NMMAPSlite-tute-homework.r :exports none :eval no
   fmtSignif <- function(x,signifpl=signifpls){
@@ -100,26 +78,65 @@ $95CI_{lower} = e^{(\beta - 1.96 \times standardError)}$ \\
 $95CI_{upper} = e^{(\beta + 1.96 \times standardError)}$ \\
 
 #+name:answer
-#+begin_src R :session *R* :tangle NMMAPSlite-tute-homework.r :exports none :eval no
+#+begin_src R :session *R* :tangle NMMAPSlite-tute-homework.r :eval no
   i <- which(row.names(modout) == 'pm10tmean')
+  # for a standardised amount of variation in exposure use the IQR
   delta <- IQR(data$pm10tmean, na.rm=T)
   RR <- exp(modout[i,1] * delta)
-  RRlci <- exp(modout[i,1] * delta  - 1.96 * modout[i,2])
-  RRuci <- exp(modout[i,1] * delta  + 1.96 * modout[i,2])
+  RRlci <- exp((modout[i,1] - 1.96 * modout[i,2]) * delta)
+  RRuci <- exp((modout[i,1] + 1.96 * modout[i,2]) * delta)
 #+end_src
+** COMMENT fmtsignif
 #+name:show RR in doc
 #+begin_src R :session *R* :tangle NMMAPSlite-tute-homework.r :exports none :eval no
   print(paste('RR = ',fmtSignif(RR,5,5),' (',fmtSignif(RRlci,5,5),', ',fmtSignif(RRuci,5,5),')',sep=''))
 #+end_src
 
 #+RESULTS: show
-: RR = 1.0002 (0.99991, 1.0004)
+=RR = 1.0038 (1.0035, 1.004)
 
-#+name:show RR in doc
-#+begin_src R :session *R* :tangle NMMAPSlite-tute-homework.r :exports none :eval no
-  print(paste('RR = ',cround(RR,4),' (',cround
-              (RRlci,4),', ',cround(RRuci,4),')',sep=''))
+** show RR and 95CI
+I could just manually format a report of the RR and CI values but it is more reproducible to do with code.
+
+NB We'll want to round the values to a sensible precision.
+*** Func-cround
+#+name:cround
+#+begin_src R :session *R* :tangle NMMAPSlite-tute-homework.r :eval no
+  cround = function(x,n){
+  # R documentation for round says for rounding off a 5, the IEC 60559 standard is expected to be used, go to the even digit.
+  # We think most people expect numbers ending in .5 to round up, not the nearest even digit.
+  # We decided that we'd round up from .5
+  # http://alandgraf.blogspot.com.au/2012/06/rounding-in-r.html
+  # It is a little comforting knowing that there is a logic behind it and that R is abiding to some standard. 
+  # But why isn't MATLAB abiding by the same standard? Also, I think most people expect numbers ending in .5 to round up, not the nearest even digit.  
+  # from comments
+  # Andrew wrote "Also, I think most people expect numbers ending in .5 to round up (not the nearest even digit)". This kind of rounding is in German #called "kaufmännische Rundung" (rounding in commerce). For this purpose I use the following function:
+  # Definition of a function for "rounding in commerce"
+  vorz = sign(x)
+  z = abs(x)*10^n
+  z = z + 0.5
+  z = trunc(z)
+  z = z/10^n
+  z*vorz
+  }
   
+#+end_src
+*** Now show the results
+
+#+begin_src R :session *R* :tangle NMMAPSlite-tute-homework.r :eval yes
+print(paste('RR = ',cround(RR,4),' (',cround(RRlci,4),', ',cround(RRuci,4),')',sep=''))
+#+end_src
+
+
+: RR = 1.0038 (0.9982, 1.0094)
+
+** COMMENT other show RR
+
+#+name:other show RR
+#+begin_src R :session *shell* :tangle NMMAPSlite-tute-homework.r :exports none :eval no
+###########################################################################
+# newnode: other show RR
+             
   RR; RRlci; RRuci
   round(RR,4)
   round(RRlci,6)
@@ -193,5 +210,5 @@ whoami
 
 * TODO list
 - need to find out if there is already a function to do the RR and CI
-- need to find out best method for rounding
+- need to find out best method for rounding: Is it ceiling()?
 - add a option for stndzed RR to IQR or SD

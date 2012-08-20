@@ -30,6 +30,22 @@ attr(terms(fit2),'term.labels')
 termplot(fit2, se =T,terms='ns(time, df = 7 * numYears)')
 dev.off()
 
+fmtSignif <- function(x,signifpl=signifpls){
+ # a function to set decimal places with trailing zero for labels
+ sapply(signif(as.numeric(x),signifpl), sprintf, fmt=paste("%#.",signifpls,"g",sep=""))
+}
+
+modout <- summary(fit2)$coeff
+
+i <- which(row.names(modout) == 'pm10tmean')
+# for a standardised amount of variation in exposure use the IQR
+delta <- IQR(data$pm10tmean, na.rm=T)
+RR <- exp(modout[i,1] * delta)
+RRlci <- exp((modout[i,1] - 1.96 * modout[i,2]) * delta)
+RRuci <- exp((modout[i,1] + 1.96 * modout[i,2]) * delta)
+
+print(paste('RR = ',fmtSignif(RR,5,5),' (',fmtSignif(RRlci,5,5),', ',fmtSignif(RRuci,5,5),')',sep=''))
+
 cround = function(x,n){
 # R documentation for round says for rounding off a 5, the IEC 60559 standard is expected to be used, go to the even digit.
 # We think most people expect numbers ending in .5 to round up, not the nearest even digit.
@@ -48,19 +64,15 @@ z = z/10^n
 z*vorz
 }
 
-fmtSignif <- function(x,signifpl=signifpls){
- # a function to set decimal places with trailing zero for labels
- sapply(signif(as.numeric(x),signifpl), sprintf, fmt=paste("%#.",signifpls,"g",sep=""))
-}
+print(paste('RR = ',cround(RR,4),' (',cround(RRlci,4),', ',cround(RRuci,4),')',sep=''))
 
-modout <- summary(fit2)$coeff
-
-i <- which(row.names(modout) == 'pm10tmean')
-RR <- exp(modout[i,1])
-RRlci <- exp(modout[i,1] - 1.96 * modout[i,2])
-RRuci <- exp(modout[i,1] + 1.96 * modout[i,2])
-
-print(paste('RR = ',fmtSignif(RR,5,5),' (',fmtSignif(RRlci,5,5),', ',fmtSignif(RRuci,5,5),')',sep=''))
+###########################################################################
+# newnode: other show RR
+             
+  RR; RRlci; RRuci
+  round(RR,4)
+  round(RRlci,6)
+  ?round
 
 ######################################################
 # get coefficients and RRs

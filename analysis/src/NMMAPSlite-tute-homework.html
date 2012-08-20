@@ -7,7 +7,7 @@
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
 <meta name="title" content="NMMAPSlite Tute Homework"/>
 <meta name="generator" content="Org-mode"/>
-<meta name="generated" content="2012-08-20 10:20:18 EST"/>
+<meta name="generated" content="2012-08-20 13:57:37 EST"/>
 <meta name="author" content="Ivan Hanigan"/>
 <meta name="description" content=""/>
 <meta name="keywords" content=""/>
@@ -146,7 +146,15 @@
 <li><a href="#sec-2">2 Func</a></li>
 <li><a href="#sec-3">3 Load</a></li>
 <li><a href="#sec-4">4 Do-modelling</a></li>
-<li><a href="#sec-5">5 do-report RRs</a></li>
+<li><a href="#sec-5">5 do-report RRs</a>
+<ul>
+<li><a href="#sec-5-1">5.1 show RR and 95CI</a>
+<ul>
+<li><a href="#sec-5-1-1">5.1.1 Func-cround</a></li>
+<li><a href="#sec-5-1-2">5.1.2 Now show the results</a></li>
+</ul></li>
+</ul>
+</li>
 <li><a href="#sec-6">6 list</a></li>
 </ul>
 </div>
@@ -220,7 +228,6 @@ str(data)
 
 
 
-
 </div>
 
 </div>
@@ -247,6 +254,77 @@ So we need to use the square brackets to select the right rows and columns and c
 
 
 
+<pre class="src src-R">i <span style="color: #268bd2; font-weight: bold;">&lt;-</span> which(row.names(modout) == <span style="color: #2aa198;">'pm10tmean'</span>)
+<span style="color: #586e75;"># </span><span style="color: #586e75;">for a standardised amount of variation in exposure use the IQR</span>
+delta <span style="color: #268bd2; font-weight: bold;">&lt;-</span> IQR(data$pm10tmean, na.rm=T)
+RR <span style="color: #268bd2; font-weight: bold;">&lt;-</span> exp(modout[i,1] * delta)
+RRlci <span style="color: #268bd2; font-weight: bold;">&lt;-</span> exp((modout[i,1] - 1.96 * modout[i,2]) * delta)
+RRuci <span style="color: #268bd2; font-weight: bold;">&lt;-</span> exp((modout[i,1] + 1.96 * modout[i,2]) * delta)
+</pre>
+
+
+
+
+</div>
+
+<div id="outline-container-5-1" class="outline-3">
+<h3 id="sec-5-1"><span class="section-number-3">5.1</span> show RR and 95CI</h3>
+<div class="outline-text-3" id="text-5-1">
+
+<p>I could just manually format a report of the RR and CI values but it is more reproducible to do with code.
+</p>
+<p>
+NB We'll want to round the values to a sensible precision.
+</p>
+</div>
+
+<div id="outline-container-5-1-1" class="outline-4">
+<h4 id="sec-5-1-1"><span class="section-number-4">5.1.1</span> Func-cround</h4>
+<div class="outline-text-4" id="text-5-1-1">
+
+
+
+
+<pre class="src src-R">cround = <span style="color: #859900; font-weight: bold;">function</span>(x,n){
+<span style="color: #586e75;"># </span><span style="color: #586e75;">R documentation for round says for rounding off a 5, the IEC 60559 standard is expected to be used, go to the even digit.</span>
+<span style="color: #586e75;"># </span><span style="color: #586e75;">We think most people expect numbers ending in .5 to round up, not the nearest even digit.</span>
+<span style="color: #586e75;"># </span><span style="color: #586e75;">We decided that we'd round up from .5</span>
+<span style="color: #586e75;"># </span><span style="color: #586e75;">http://alandgraf.blogspot.com.au/2012/06/rounding-in-r.html</span>
+<span style="color: #586e75;"># </span><span style="color: #586e75;">It is a little comforting knowing that there is a logic behind it and that R is abiding to some standard. </span>
+<span style="color: #586e75;"># </span><span style="color: #586e75;">But why isn't MATLAB abiding by the same standard? Also, I think most people expect numbers ending in .5 to round up, not the nearest even digit.  </span>
+<span style="color: #586e75;"># </span><span style="color: #586e75;">from comments</span>
+<span style="color: #586e75;"># </span><span style="color: #586e75;">Andrew wrote "Also, I think most people expect numbers ending in .5 to round up (not the nearest even digit)". This kind of rounding is in German #called "kaufm&#228;nnische Rundung" (rounding in commerce). For this purpose I use the following function:</span>
+<span style="color: #586e75;"># </span><span style="color: #586e75;">Definition of a function for "rounding in commerce"</span>
+vorz = sign(x)
+z = abs(x)*10^n
+z = z + 0.5
+z = trunc(z)
+z = z/10^n
+z*vorz
+}
+
+</pre>
+
+</div>
+
+</div>
+
+<div id="outline-container-5-1-2" class="outline-4">
+<h4 id="sec-5-1-2"><span class="section-number-4">5.1.2</span> Now show the results</h4>
+<div class="outline-text-4" id="text-5-1-2">
+
+
+
+
+
+<pre class="src src-R">print(paste(<span style="color: #2aa198;">'RR = '</span>,cround(RR,4),<span style="color: #2aa198;">' ('</span>,cround(RRlci,4),<span style="color: #2aa198;">', '</span>,cround(RRuci,4),<span style="color: #2aa198;">')'</span>,sep=<span style="color: #2aa198;">''</span>))
+</pre>
+
+
+
+<pre class="example">
+RR = 1.0038 (0.9982, 1.0094)
+</pre>
 
 
 
@@ -256,6 +334,10 @@ So we need to use the square brackets to select the right rows and columns and c
 
 
 
+
+
+</div>
+</div>
 </div>
 
 </div>
@@ -267,7 +349,7 @@ So we need to use the square brackets to select the right rows and columns and c
 <ul>
 <li>need to find out if there is already a function to do the RR and CI
 </li>
-<li>need to find out best method for rounding
+<li>need to find out best method for rounding: Is it ceiling()?
 </li>
 <li>add a option for stndzed RR to IQR or SD
 </li>
