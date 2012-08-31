@@ -34,6 +34,8 @@
 \setcounter{page}{1}
 \pagenumbering{roman}
 \tableofcontents 
+\listoftables
+\listoffigures
 \pagenumbering{arabic}
 \setcounter{page}{1}
 
@@ -69,31 +71,31 @@ lm(formula = y ~ x)
 
 Residuals:
     Min      1Q  Median      3Q     Max 
--39.701  -6.533   0.833   9.876  35.833 
+-31.482  -7.235   1.037  10.652  28.990 
 
 Coefficients:
             Estimate Std. Error t value Pr(>|t|)    
-(Intercept)  25.1416     3.1582   7.961 3.08e-12 ***
-x            -0.3099     0.2692  -1.151    0.252    
+(Intercept)  13.1925     2.8366   4.651 1.03e-05 ***
+x             0.7194     0.2464   2.920  0.00434 ** 
 ---
 Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1 
 
-Residual standard error: 14.46 on 98 degrees of freedom
-Multiple R-squared: 0.01334,	Adjusted R-squared: 0.003276 
-F-statistic: 1.325 on 1 and 98 DF,  p-value: 0.2524 
+Residual standard error: 13.37 on 98 degrees of freedom
+Multiple R-squared: 0.08004,	Adjusted R-squared: 0.07065 
+F-statistic: 8.526 on 1 and 98 DF,  p-value: 0.004343 
 \end{Soutput}
 \end{Schunk}
 Using the xtable package allows results to be displyed in tables and has built in support for some R objects, so summrising the linear fit above in Table ~\ref{ATable}.
 % latex table generated in R 2.15.1 by xtable 1.7-0 package
-% Wed Aug  8 10:06:31 2012
+% Fri Aug 31 14:12:02 2012
 \begin{table}[ht]
 \begin{center}
 \begin{tabular}{rrrrr}
   \hline
  & Estimate & Std. Error & t value & Pr($>$$|$t$|$) \\ 
   \hline
-(Intercept) & 25.1416 & 3.1582 & 7.9608 & 0.0000 \\ 
-  x & -0.3099 & 0.2692 & -1.1512 & 0.2524 \\ 
+(Intercept) & 13.1925 & 2.8366 & 4.6509 & 0.0000 \\ 
+  x & 0.7194 & 0.2464 & 2.9200 & 0.0043 \\ 
    \hline
 \end{tabular}
 \caption{Example Table}

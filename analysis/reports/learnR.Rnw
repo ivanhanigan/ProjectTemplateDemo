@@ -34,6 +34,8 @@
 \setcounter{page}{1}
 \pagenumbering{roman}
 \tableofcontents 
+\listoftables
+\listoffigures
 \pagenumbering{arabic}
 \setcounter{page}{1}
 

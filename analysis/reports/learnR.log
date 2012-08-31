@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=pdflatex 2012.7.8)  8 AUG 2012 10:06
+This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=pdflatex 2012.7.8)  31 AUG 2012 14:12
 entering extended mode
  file:line:error style messages enabled.
  %&-line parsing enabled.
@@ -371,45 +371,51 @@ LaTeX Font Info:    External font `cmex10' loaded for size
 \tf@toc=\write5
 \openout5 = `learnR.toc'.
 
-LaTeX Font Info:    Try loading font information for T1+aett on input line 51.
+ (./learnR.lot)
+\tf@lot=\write6
+\openout6 = `learnR.lot'.
+
+ (./learnR.lof)
+\tf@lof=\write7
+\openout7 = `learnR.lof'.
+
+
+[1
+
+{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}]
+LaTeX Font Info:    Try loading font information for T1+aett on input line 53.
 
 (/usr/share/texmf-texlive/tex/latex/ae/t1aett.fd
 File: t1aett.fd 1997/11/16 Font definitions for T1/aett.
 )
-LaTeX Font Info:    Try loading font information for TS1+aett on input line 52.
+LaTeX Font Info:    Try loading font information for TS1+aett on input line 54.
 
 
 (/usr/share/R/share/texmf/tex/latex/ts1aett.fd
 File: ts1aett.fd 
 )
-LaTeX Font Info:    Try loading font information for TS1+cmtt on input line 52.
+LaTeX Font Info:    Try loading font information for TS1+cmtt on input line 54.
 
 
 (/usr/share/texmf-texlive/tex/latex/base/ts1cmtt.fd
 File: ts1cmtt.fd 1999/05/25 v2.5h Standard LaTeX font definitions
 )
 LaTeX Font Info:    Font shape `TS1/aett/m/sl' in size <10> not available
-(Font)              Font shape `TS1/cmtt/m/sl' tried instead on input line 52.
- [1
+(Font)              Font shape `TS1/cmtt/m/sl' tried instead on input line 54.
 
-{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}]
 
-LaTeX Warning: Reference `aPlot.png' on page 2 undefined on input line 104.
+LaTeX Warning: Reference `aPlot.png' on page 2 undefined on input line 106.
 
-<aPlot.png, id=60, 216.81pt x 216.81pt>
+[2] <aPlot.png, id=79, 216.81pt x 216.81pt>
 File: aPlot.png Graphic file (type png)
- <use aPlot.png>
-
-LaTeX Warning: `!h' float specifier changed to `!ht'.
-
-[2] [3 <./aPlot.png (PNG copy)>]
-Overfull \hbox (130.81834pt too wide) in paragraph at lines 120--121
+ <use aPlot.png> [3 <./aPlot.png (PNG copy)>]
+Overfull \hbox (130.81834pt too wide) in paragraph at lines 122--123
 \T1/aer/m/n/10 This blog post []$\T1/aett/m/n/10 http : / / www . win-[]vector 
 . com / blog / 2012 / 04 / how-[]to-[]remember-[]point-[]shape-[]codes-[]in-[]r
 /$[]
  []
 
-<pchopts.png, id=82, 481.8pt x 481.8pt>
+<pchopts.png, id=88, 481.8pt x 481.8pt>
 File: pchopts.png Graphic file (type png)
  <use pchopts.png> [4
 
@@ -419,13 +425,13 @@ LaTeX Warning: There were undefined references.
 
  ) 
 Here is how much of TeX's memory you used:
- 5683 strings out of 493848
- 81875 string characters out of 1152824
+ 5691 strings out of 493848
+ 81947 string characters out of 1152824
  144405 words of memory out of 3000000
  8798 multiletter control sequences out of 15000+50000
  31656 words of font info for 67 fonts, out of 3000000 for 9000
  714 hyphenation exceptions out of 8191
- 38i,10n,43p,620b,450s stack positions out of 5000i,500n,10000p,200000b,50000s
+ 38i,10n,43p,620b,342s stack positions out of 5000i,500n,10000p,200000b,50000s
 {/usr/share/texmf/fonts/enc/dvips/cm-super/cm-super-ts1.enc}</usr/share/texmf
 -texlive/fonts/type1/public/amsfonts/cm/cmbx10.pfb></usr/share/texmf-texlive/fo
 nts/type1/public/amsfonts/cm/cmbx12.pfb></usr/share/texmf-texlive/fonts/type1/p
@@ -438,9 +444,9 @@ ype1/public/amsfonts/cm/cmsltt10.pfb></usr/share/texmf-texlive/fonts/type1/publ
 ic/amsfonts/cm/cmsy10.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts
 /cm/cmti10.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmtt10.
 pfb></usr/share/texmf/fonts/type1/public/cm-super/sfst1000.pfb>
-Output written on learnR.pdf (5 pages, 232509 bytes).
+Output written on learnR.pdf (5 pages, 235513 bytes).
 PDF statistics:
- 144 PDF objects out of 1000 (max. 8388607)
- 21 named destinations out of 1000 (max. 500000)
+ 149 PDF objects out of 1000 (max. 8388607)
+ 23 named destinations out of 1000 (max. 500000)
  79 words of extra memory for PDF output out of 10000 (max. 10000000)
 

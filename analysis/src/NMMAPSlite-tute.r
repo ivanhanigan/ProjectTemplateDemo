@@ -7,7 +7,7 @@
 # 2012-08-16
 # description:
 # a tute to demo R codes for multiple regression modelling
-# homework is to get the RR and 95 percent CIs for pm10tmeantt
+# homework is to get the RR and 95 percent CIs for pm10tmeant
 #################################################################
 getwd()
 setwd('~/tools/ProjectTemplateDemo/analysis')
