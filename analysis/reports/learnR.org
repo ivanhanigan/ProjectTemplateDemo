@@ -7,7 +7,7 @@
 
 * fit a model
 #+name:fit
-#+begin_src R :session *R* :tangle learnR-plot.r :exports none :eval no
+#+begin_src R :session *R* :tangle learnR-plot.r :eval no
   ################################################################
   # name:fit
   x<-rnorm(100,10,5)
@@ -17,7 +17,7 @@
 #+end_src
 * make a plot
 #+name:plot
-#+begin_src R :session *R* :tangle learnR-plot.r :exports none :eval no
+#+begin_src R :session *R* :tangle learnR-plot.r :eval no
 ################################################################
 # name:plot
 png('aPlot.png', res=200,width = 600, height = 600)
@@ -25,9 +25,10 @@ plot(x,y,main="Example Plot",xlab="X Variable",ylab="Y Variable")
 abline(fit,col="Red")
 dev.off()
 #+end_src
+[[file:aPlot.png]]
 * points
 #+name:points
-#+begin_src R :session *R* :tangle learnR-plot.r :exports none :eval no
+#+begin_src R :session *R* :tangle learnR-plot.r :eval no
 ################################################################
 # name:points
 png('pchopts.png')
@@ -43,3 +44,4 @@ for(i in c("*", "?", ".", "X", "a")){
 dev.off()
 
 #+end_src
+[[file:pchopts.png]]

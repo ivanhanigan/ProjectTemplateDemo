@@ -566,6 +566,7 @@ So now if a user wants to do the analysis differently with the same data they ca
 # \end{figure}
 * Other case studies
 ** COMMENT learnR
+NB also see alternate workflow in [[./analysis/reports/learnR.org]]
 #+name:learnR.Rnw
 #+begin_src R :session *R* :tangle analysis/reports/learnR.Rnw :exports none :eval no
 % NB in Rstudio might have to go tools/options and tick `Invoke compiler via texi2dvi script'
