@@ -46,3 +46,86 @@ dev.off()
 
 #+end_src
 [[file:pchopts.png]]
+* statistical modelling
+
+** Logistic Regression using the NASA Challenger dataset
+
+Copied from Peter Caley's notebook on challenger disaster page 103 'O' ring failures.   https://alliance.anu.edu.au/access/content/group/bf77d6fc-d1e1-401c-806a-25fbe06a82d0/R%20wiki%20files/R%20logistic%20example/Caley%20Statistical%20Modelling%20Course%20Notes%20-%20Working%20copy.pdf
+
+#+name:logistic regression
+#+begin_src R :session *R* :tangle learnR-logistic.r :exports none :eval no
+  ################################################################
+  # name:logistic regression
+  #Load the data
+  #The following R code will construct the dataset
+  n.fail <- c(2, 0, 0, 1, 0, 0, 1, 0, 0, 1, 2, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0)
+  temp <- c(53, 66, 68, 70, 75, 78, 57, 67, 69, 70, 75, 79, 58, 67, 70, 72, 76, 81, 63, 67, 70,
+  73, 76)
+  # there were 6 o rings for each of 23 attempts
+  total <- rep(6,23)
+  # probability of fail
+  p.fail <- n.fail/total
+  # Response = resp column bind them together touching, # of failures & the # of those that didn't - ie -ve n
+  resp <- cbind(n.fail, total-n.fail)
+#+end_src
+Plot the data
+A plot of the data is shown below:
+
+[[file:pfail.png]]
+
+Made with the following code:
+#+name:learnR-logistic
+#+begin_src R :session *R* :tangle learnR-logistic.r  :eval no
+  ################################################################
+  # name:learnR-logistic
+  png('pfail.png')
+  plot(temp, p.fail, pch=16, xlim=c(40,100), ylim=c(0,0.4))
+  title('A plot of the proportion failed by temperature')
+  dev.off()
+#+end_src
+
+# \clearpage
+# \section{Fit a model}
+# <<>>=
+# # logistic linear regression
+#  linear <- glm(resp ~ 1 + temp, family=binomial(link=logit))
+#  summary(linear)
+#  linearoutput <- summary(linear)
+# @
+
+# \section{Write the output to a spreadsheet}
+# It is often good to write the output to a spreadsheet file.
+
+# <<label=tab1,echo=FALSE,results=tex>>=
+# # write what?
+# require(xtable)
+
+# print(xtable(linearoutput$coeff), table.placement = '!ht',
+#   caption.placement = 'top', include.rownames = FALSE)
+# @
+
+# <<>>=
+# # all coeffs?
+# write.csv(linearoutput$coeff,"challengerOfails.csv")
+# @
+
+# \section{Now a plot of the prediction}
+# A plot of the data is shown in \ref{fig:pfailfit}.
+
+# \begin{figure}
+# \begin{center}
+# <<label=pfailfit,fig=TRUE,echo=FALSE>>=
+# dummy <- data.frame(temp=seq(20,100,1))
+# pred.prob <- predict.glm(linear, newdata=dummy, type="resp")
+# plot(temp, p.fail, xlab="Launch Temperature (F)",
+# ylab="Proportion Failing", pch=16, xlim=c(20,100), ylim=c(0,1.0))
+# lines(dummy$temp, pred.prob)
+# @
+
+# \end{center}
+# \caption{A plot of the proportion failed by temperature}
+# \label{fig:pfailfit}
+# \end{figure}
+
+# \end{document}
+# #+end_src
