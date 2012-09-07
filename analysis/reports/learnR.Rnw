@@ -9,8 +9,8 @@
 \restylefloat{figure} %and this command
 \usepackage{url} %Formatting of yrls
 \usepackage{verbatim}
-\usepackage{cite}
-\usepackage{hyperref}
+\usepackage{cite} 
+\usepackage{hyperref} 
 %Define all the headers and footers
 \lhead{}
 \chead{NCEPH Working Paper}
@@ -33,14 +33,14 @@
 
 \setcounter{page}{1}
 \pagenumbering{roman}
-\tableofcontents
+\tableofcontents 
 \listoftables
 \listoffigures
 \pagenumbering{arabic}
 \setcounter{page}{1}
 
 \section{Introduction}
-This is an introduction to some resources that are useful for learning R.
+This is an introduction to some resources that are useful for learning R.  
 \section{The R code that produced this report}
 It is important to appreciate that R is free and open source software.  This means that any code you write can be viewed and modified by others.  In some cases we need to protect our Intellectual Property and the following statement is an attempt to ascribe copyright to our work, even though it remains open source.
 
@@ -48,13 +48,13 @@ It is important to appreciate that R is free and open source software.  This mea
 <<eval=FALSE,echo=FALSE,keep.source=TRUE>>=
 cat('
  #######################################################################
- ## The R code is free software; please cite this paper as the source.
- ## Copyright 2012, Ivan C Hanigan <ivan.hanigan@gmail.com>
+ ## The R code is free software; please cite this paper as the source.  
+ ## Copyright 2012, Ivan C Hanigan <ivan.hanigan@gmail.com> 
  ## This program is free software; you can redistribute it and/or modify
  ## it under the terms of the GNU General Public License as published by
  ## the Free Software Foundation; either version 2 of the License, or
  ## (at your option) any later version.
- ##
+ ## 
  ## This program is distributed in the hope that it will be useful,
  ## but WITHOUT ANY WARRANTY; without even the implied warranty of
  ## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -64,18 +64,18 @@ cat('
  ## 02110-1301, USA
  #######################################################################
 ')
-@
+@ 
 
 
 \subsection{func}
 I'll use the following packages:
-<<eval=TRUE,echo=TRUE,keep.source=TRUE>>=
+<<eval=TRUE,echo=TRUE,keep.source=TRUE>>=  
 if(!require(xtable)) install.packages('xtable', repos = 'http://cran.csiro.au')
 require(xtable)
 #require(ggplot2)
 #require(ProjectTemplate)
 @
-<<eval=FALSE,echo=FALSE,keep.source=TRUE>>=
+<<eval=FALSE,echo=FALSE,keep.source=TRUE>>=  
 create.project('analysis', minimal = TRUE)
 dir.create('analysis/reports')
 # the plan
@@ -93,10 +93,10 @@ require(xtable)
 xtable(fit, caption="Example Table",digits=4,table.placement="H",label="ATable")
 @
 \subsection{A Plot}
-
+ 
 Plots intergrate easily, using the \LaTeX float package as can be seen in figure ~\ref{aPlot.png}.  However I like to make them as pngs and then include.
 
-<<eval=TRUE,echo=FALSE,keep.source=TRUE>>=
+<<eval=TRUE,echo=FALSE,keep.source=TRUE>>=  
 png('aPlot.png', res=200,width = 600, height = 600)
 plot(x,y,main="Example Plot",xlab="X Variable",ylab="Y Variable")
 abline(fit,col="Red")
