@@ -8,7 +8,8 @@ summary(fit)
 
 ################################################################
 # name:plot
-png('aPlot.png', res=200,width = 600, height = 600)
+# once the plot composition looks good, I write it directly to a hi res file
+# png('aPlot.png', res=200,width = 600, height = 600)
 plot(x,y,main="Example Plot",xlab="X Variable",ylab="Y Variable")
 abline(fit,col="Red")
 dev.off()
