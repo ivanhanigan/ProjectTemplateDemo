@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+               "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<title>learnR </title>
+<meta http-equiv="Content-Type" content="text/html;charset=iso-8859-1"/>
+<meta name="title" content="learnR "/>
+<meta name="generator" content="Org-mode"/>
+<meta name="generated" content="2012-09-08 08:56:13 EST"/>
+<meta name="author" content="Ivan Hanigan"/>
+<meta name="description" content=""/>
+<meta name="keywords" content=""/>
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  html { font-family: Times, serif; font-size: 12pt; }
+  .title  { text-align: center; }
+  .todo   { color: red; }
+  .done   { color: green; }
+  .tag    { background-color: #add8e6; font-weight:normal }
+  .target { }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .right  {margin-left:auto; margin-right:0px;  text-align:right;}
+  .left   {margin-left:0px;  margin-right:auto; text-align:left;}
+  .center {margin-left:auto; margin-right:auto; text-align:center;}
+  p.verse { margin-left: 3% }
+  pre {
+	border: 1pt solid #AEBDCC;
+	background-color: #F3F5F7;
+	padding: 5pt;
+	font-family: courier, monospace;
+        font-size: 90%;
+        overflow:auto;
+  }
+  table { border-collapse: collapse; }
+  td, th { vertical-align: top;  }
+  th.right  { text-align:center;  }
+  th.left   { text-align:center;   }
+  th.center { text-align:center; }
+  td.right  { text-align:right;  }
+  td.left   { text-align:left;   }
+  td.center { text-align:center; }
+  dt { font-weight: bold; }
+  div.figure { padding: 0.5em; }
+  div.figure p { text-align: center; }
+  div.inlinetask {
+    padding:10px;
+    border:2px solid gray;
+    margin:10px;
+    background: #ffffcc;
+  }
+  textarea { overflow-x: auto; }
+  .linenr { font-size:smaller }
+  .code-highlighted {background-color:#ffff00;}
+  .org-info-js_info-navigation { border-style:none; }
+  #org-info-js_console-label { font-size:10px; font-weight:bold;
+                               white-space:nowrap; }
+  .org-info-js_search-highlight {background-color:#ffff00; color:#000000;
+                                 font-weight:bold; }
+  /*]]>*/-->
+</style>
+<script type="text/javascript">
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+
+</head>
+<body>
+
+<div id="preamble">
+
+</div>
+
+<div id="content">
+<h1 class="title">learnR </h1>
+
+
+<hr/>
+
+
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#sec-1">1 fit a model</a></li>
+<li><a href="#sec-2">2 make a plot</a></li>
+<li><a href="#sec-3">3 points</a></li>
+<li><a href="#sec-4">4 statistical modelling</a>
+<ul>
+<li><a href="#sec-4-1">4.1 Logistic Regression using the NASA Challenger dataset</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-1" class="outline-2">
+<h2 id="sec-1"><span class="section-number-2">1</span> fit a model</h2>
+<div class="outline-text-2" id="text-1">
+
+
+
+
+<pre class="src src-R"><span style="color: #586e75;">################################################################</span>
+<span style="color: #586e75;"># </span><span style="color: #586e75;">name:fit</span>
+x<span style="color: #268bd2; font-weight: bold;">&lt;-</span>rnorm(100,10,5)
+y<span style="color: #268bd2; font-weight: bold;">&lt;-</span>rnorm(100,20,15)
+fit <span style="color: #268bd2; font-weight: bold;">&lt;-</span> lm(y~x)
+summary(fit)
+</pre>
+
+</div>
+
+</div>
+
+<div id="outline-container-2" class="outline-2">
+<h2 id="sec-2"><span class="section-number-2">2</span> make a plot</h2>
+<div class="outline-text-2" id="text-2">
+
+
+
+
+<pre class="src src-R"><span style="color: #586e75;">################################################################</span>
+<span style="color: #586e75;"># </span><span style="color: #586e75;">name:plot</span>
+<span style="color: #586e75;"># </span><span style="color: #586e75;">once the plot composition looks good, I write it directly to a hi res file</span>
+<span style="color: #586e75;"># </span><span style="color: #586e75;">png('aPlot.png', res=200,width = 600, height = 600)</span>
+plot(x,y,main=<span style="color: #2aa198;">"Example Plot"</span>,xlab=<span style="color: #2aa198;">"X Variable"</span>,ylab=<span style="color: #2aa198;">"Y Variable"</span>)
+abline(fit,col=<span style="color: #2aa198;">"Red"</span>)
+dev.off()
+</pre>
+
+<p>
+<img src="aPlot.png"  alt="aPlot.png" />
+</p></div>
+
+</div>
+
+<div id="outline-container-3" class="outline-2">
+<h2 id="sec-3"><span class="section-number-2">3</span> points</h2>
+<div class="outline-text-2" id="text-3">
+
+
+
+
+<pre class="src src-R"><span style="color: #586e75;">################################################################</span>
+<span style="color: #586e75;"># </span><span style="color: #586e75;">name:points</span>
+png(<span style="color: #2aa198;">'pchopts.png'</span>)
+par(mfrow=c(3,10), mar=c(0,0,2,0))
+<span style="color: #859900; font-weight: bold;">for</span>(i <span style="color: #859900; font-weight: bold;">in</span> c(1:25)){
+ plot(1,1,pch=i, axes=F, cex = 3, col = <span style="color: #2aa198;">'blue'</span>, bg = <span style="color: #2aa198;">'yellow'</span>)
+ title(i)
+ }
+<span style="color: #859900; font-weight: bold;">for</span>(i <span style="color: #859900; font-weight: bold;">in</span> c(<span style="color: #2aa198;">"*"</span>, <span style="color: #2aa198;">"?"</span>, <span style="color: #2aa198;">"."</span>, <span style="color: #2aa198;">"X"</span>, <span style="color: #2aa198;">"a"</span>)){
+ plot(1,1,pch=i, axes=F, cex = 3, col = <span style="color: #2aa198;">'blue'</span>, bg = <span style="color: #2aa198;">'yellow'</span>)
+ title(i)
+ }
+dev.off()
+
+</pre>
+
+<p>
+<img src="pchopts.png"  alt="pchopts.png" />
+</p></div>
+
+</div>
+
+<div id="outline-container-4" class="outline-2">
+<h2 id="sec-4"><span class="section-number-2">4</span> statistical modelling</h2>
+<div class="outline-text-2" id="text-4">
+
+
+
+</div>
+
+<div id="outline-container-4-1" class="outline-3">
+<h3 id="sec-4-1"><span class="section-number-3">4.1</span> Logistic Regression using the NASA Challenger dataset</h3>
+<div class="outline-text-3" id="text-4-1">
+
+
+<p>
+Copied from Peter Caley's notebook on challenger disaster page 103 'O' ring failures.   <a href="https://alliance.anu.edu.au/access/content/group/bf77d6fc-d1e1-401c-806a-25fbe06a82d0/R wiki files/R logistic example/Caley Statistical Modelling Course Notes - Working copy.pdf">https://alliance.anu.edu.au/access/content/group/bf77d6fc-d1e1-401c-806a-25fbe06a82d0/R%20wiki%20files/R%20logistic%20example/Caley%20Statistical%20Modelling%20Course%20Notes%20-%20Working%20copy.pdf</a>
+</p>
+
+<p>
+Plot the data
+A plot of the data is shown below:
+</p>
+<p>
+<img src="pfail.png"  alt="pfail.png" />
+</p>
+<p>
+Made with the following code:
+</p>
+
+
+<pre class="src src-R"><span style="color: #586e75;">################################################################</span>
+<span style="color: #586e75;"># </span><span style="color: #586e75;">name:learnR-logistic</span>
+png(<span style="color: #2aa198;">'pfail.png'</span>)
+plot(temp, p.fail, pch=16, xlim=c(40,100), ylim=c(0,0.4))
+title(<span style="color: #2aa198;">'A plot of the proportion failed by temperature'</span>)
+dev.off()
+</pre>
+
+
+
+
+<p>
+<a name="label-tab1-echo-FALSE-results-tex" id="label-tab1-echo-FALSE-results-tex"></a>
+</p>
+
+
+
+<p>
+<a name="label-pfailfit-fig-TRUE-echo-FALSE" id="label-pfailfit-fig-TRUE-echo-FALSE"></a>
+</p>
+
+</div>
+</div>
+</div>
+</div>
+
+</body>
+</html>

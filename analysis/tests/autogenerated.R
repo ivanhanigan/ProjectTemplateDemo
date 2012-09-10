@@ -1,0 +1,6 @@
+expect_that(directRates(analyte = NULL, standard_pop = NULL, stratify.var = NULL), equals(NULL))
+expect_that(directRates(analyte = NULL, standard_pop = NULL, stratify.var = NULL), equals(NULL))
+expect_that(dstdize(data = NULL, charvar = NULL, popvar = NULL, stratavars = NULL, by = NULL, using = NULL, print = NULL, time = NULL), equals(NULL))
+expect_that(directRates(analyte = NULL, standard_pop = NULL, stratify.var = NULL), equals(NULL))
+expect_that(dstdize(data = NULL, charvar = NULL, popvar = NULL, stratavars = NULL, by = NULL, using = NULL, print = NULL, time = NULL), equals(NULL))
+expect_that(helper.function(), equals(NULL))
