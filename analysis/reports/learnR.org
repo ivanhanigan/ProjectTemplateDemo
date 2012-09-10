@@ -51,9 +51,9 @@ dev.off()
 ** Logistic Regression using the NASA Challenger dataset
 
 Copied from Peter Caley's notebook on challenger disaster page 103 'O' ring failures.   https://alliance.anu.edu.au/access/content/group/bf77d6fc-d1e1-401c-806a-25fbe06a82d0/R%20wiki%20files/R%20logistic%20example/Caley%20Statistical%20Modelling%20Course%20Notes%20-%20Working%20copy.pdf
-
+*** load
 #+name:logistic regression
-#+begin_src R :session *R* :tangle learnR-logistic.r :exports none :eval no
+#+begin_src R :session *R* :tangle learnR-logistic.r :eval no
   ################################################################
   # name:logistic regression
   #Load the data
@@ -65,15 +65,25 @@ Copied from Peter Caley's notebook on challenger disaster page 103 'O' ring fail
   total <- rep(6,23)
   # probability of fail
   p.fail <- n.fail/total
-  # Response = resp column bind them together touching, # of failures & the # of those that didn't - ie -ve n
+  # Response = resp column bind them together  
   resp <- cbind(n.fail, total-n.fail)
 #+end_src
-Plot the data
-A plot of the data is shown below:
+*** an aside, reading data from CSV
+#+name:learnR-logistic
+#+begin_src R :session *R* :tangle learnR-logistic.r :eval no
+  ###########################################################################
+  # we can write text files easily once the data frame or matrix is in shape
+  data <- as.data.frame(cbind(resp,temp))
+  names(data) <- c('nfail','totalMinusNfail', 'temp')
+  write.csv(data, 'learnR-logistic-data.csv', row.names=F)
 
-[[file:pfail.png]]
-
-Made with the following code:
+  ###########################################################################
+  # and read it in 
+  data2 <- read.csv('learnR-logistic-data.csv')
+  
+#+end_src
+*** clean
+Exploratory data analysis often begins with a plot
 #+name:learnR-logistic
 #+begin_src R :session *R* :tangle learnR-logistic.r  :eval no
   ################################################################
@@ -83,18 +93,40 @@ Made with the following code:
   title('A plot of the proportion failed by temperature')
   dev.off()
 #+end_src
+A plot of the data is shown below:
 
-# \clearpage
-# \section{Fit a model}
-# <<>>=
-# # logistic linear regression
-#  linear <- glm(resp ~ 1 + temp, family=binomial(link=logit))
-#  summary(linear)
-#  linearoutput <- summary(linear)
-# @
+[[file:pfail.png]]
 
-# \section{Write the output to a spreadsheet}
-# It is often good to write the output to a spreadsheet file.
+*** do
+**** Fit a logistic linear regression
+#+name:linear
+#+begin_src R :session *R* :tangle learnR-logistic.r :eval no
+###########################################################################
+# newnode: linear
+linear <- glm(resp ~ 1 + temp, family=binomial(link=logit))
+summary(linear)
+linearoutput <- summary(linear)
+linearoutput$coeff
+#+end_src
+
+|          Estimate |                 SE |           z value |            p value |
+|  5.08497723236888 |   3.05247411952113 |  1.66585433103249 | 0.0957424316329616 |
+| -0.11560116666022 | 0.0470236223378252 | -2.45836370983339 | 0.0139571741811117 |
+**** select a coefficient
+#+name:learnR-logistic
+#+begin_src R :session *R* :tangle learnR-logistic.r :eval no
+  ###########################################################################
+  # newnode: learnR-logistic
+  cf <- linearoutput$coeff
+  signif(cf[which(row.names(cf) == 'temp'),'Estimate'],2)
+  
+#+end_src
+
+
+: -0.12
+
+**** Write the output to a spreadsheet
+It is often good to write the output to a spreadsheet file.
 
 # <<label=tab1,echo=FALSE,results=tex>>=
 # # write what?
@@ -104,28 +136,101 @@ Made with the following code:
 #   caption.placement = 'top', include.rownames = FALSE)
 # @
 
-# <<>>=
-# # all coeffs?
-# write.csv(linearoutput$coeff,"challengerOfails.csv")
-# @
 
-# \section{Now a plot of the prediction}
-# A plot of the data is shown in \ref{fig:pfailfit}.
+#+name:learnR-logistic
+#+begin_src R :session *shell* :tangle learnR-logistic.r :eval no
+###########################################################################
+# newnode: learnR-logistic
+write.csv(linearoutput$coeff,"challengerOfails.csv")
+#+end_src
 
-# \begin{figure}
-# \begin{center}
-# <<label=pfailfit,fig=TRUE,echo=FALSE>>=
-# dummy <- data.frame(temp=seq(20,100,1))
-# pred.prob <- predict.glm(linear, newdata=dummy, type="resp")
-# plot(temp, p.fail, xlab="Launch Temperature (F)",
-# ylab="Proportion Failing", pch=16, xlim=c(20,100), ylim=c(0,1.0))
-# lines(dummy$temp, pred.prob)
-# @
+**** model diagnostic 1 - plots of model performance
+#+name:learnR-logistic
+#+begin_src R :session *R* :tangle learnR-logistic.r :eval no
+  ###########################################################################
+  # newnode: learnR-logistic
+   png('challengerLogistic.png')
+   par(mfrow=c(2,2))
+   plot(linear)
+   dev.off()
+  
+#+end_src
 
-# \end{center}
-# \caption{A plot of the proportion failed by temperature}
-# \label{fig:pfailfit}
-# \end{figure}
+Some standard model diagnostics plot is shown
 
-# \end{document}
-# #+end_src
+file:challengerLogistic.png
+
+
+**** model diagnostic 2 - plot of the prediction
+
+#+name:learnR-logistic
+#+begin_src R :session *R* :tangle learnR-logistic.r :eval no
+  ###########################################################################
+  # newnode: learnR-logistic
+   dummy <- data.frame(temp=seq(20,100,1))
+   pred.prob <- predict.glm(linear, newdata=dummy, type="resp")
+   png('pfailfit.png')
+   plot(temp, p.fail, xlab="Launch Temperature (F)",
+    ylab="Proportion Failing", pch=16, xlim=c(20,100), ylim=c(0,1.0))
+   lines(dummy$temp, pred.prob)
+   dev.off()
+  
+#+end_src
+
+A plot of prediction fit to the data is shown
+
+file:pfailfit.png
+
+** logistic regression of a binary response
+
+In the next example we analyse the data as a binary response variable where 1 represents damage to field joints, and a 0 represents no damage.
+
+This was copied from D. Cook, P. Dixon, W. M. Duckworth, M. S. Kaiser, K. Koehler, W. Q. Meeker and W. R. Stephenson.  'Binary Response and Logistic Regression Analysis' https://alliance.anu.edu.au/access/content/group/bf77d6fc-d1e1-401c-806a-25fbe06a82d0/R%20wiki%20files/R%20logistic%20example/stat415_chapter3.pdf
+
+*** load the response variable data
+#+begin_src R :session *R* :tangle learnR-logistic.r :eval no
+  ###########################################################################
+  resp <- as.data.frame(resp)
+  resp$fail <- ifelse(resp$n.fail > 0, 1, 0)
+  resp$temp <- temp
+#+end_src
+*** clean
+#+begin_src R :session *R* :tangle learnR-logistic.r :eval no
+  png('fail.png')
+  with(resp, plot(temp, fail, xlab="Launch Temperature (F)",ylab="Joint damage", pch=16, xlim=c(50,80), ylim=c(0,1.0))
+       )
+  dev.off()
+#+end_src
+
+Incidence of joint failure by temperature:
+
+file:fail.png
+
+*** do logistic analysis
+Now do the analysis as suggested on page 22.
+#+begin_src R :session *R* :tangle learnR-logistic.r :eval no
+  chal.logit <- glm(fail~temp,family=binomial, data = resp)
+  summary(chal.logit)$coeff
+#+end_src
+
+|           Estimate |        Std. Error |           z value |            p value |
+|   15.0429016476892 |  7.37863013178574 |  2.03871198027493 | 0.0414787813758369 |
+| -0.232162744218401 | 0.108236429548873 | -2.14495937445507 | 0.0319560953057822 |
+
+*** Plot the Regression Curve
+#+begin_src R :session *R* :tangle learnR-logistic.r :eval no
+  png('pfailfit2.png')
+  cx <- c(50:80/1)
+  cyhat <- coefficients(chal.logit)[c(1)] +
+  coefficients(chal.logit)[c(2)]*cx
+  cpihat <- exp(cyhat)/(1+exp(cyhat))
+  with(resp,plot(temp,fail,xlab="Temperature",ylab="Damage",
+  main="Incidence of Booster Field Joint Damage vs. Temperature", xlim = c(50,80))
+       )
+  lines(cx,cpihat)
+  dev.off()
+#+end_src
+
+And the result 
+
+file:pfailfit2.png

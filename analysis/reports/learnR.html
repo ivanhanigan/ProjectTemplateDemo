@@ -7,7 +7,7 @@
 <meta http-equiv="Content-Type" content="text/html;charset=iso-8859-1"/>
 <meta name="title" content="learnR "/>
 <meta name="generator" content="Org-mode"/>
-<meta name="generated" content="2012-09-08 08:56:13 EST"/>
+<meta name="generated" content="2012-09-10 13:32:53 EST"/>
 <meta name="author" content="Ivan Hanigan"/>
 <meta name="description" content=""/>
 <meta name="keywords" content=""/>
@@ -106,7 +106,22 @@
 <li><a href="#sec-3">3 points</a></li>
 <li><a href="#sec-4">4 statistical modelling</a>
 <ul>
-<li><a href="#sec-4-1">4.1 Logistic Regression using the NASA Challenger dataset</a></li>
+<li><a href="#sec-4-1">4.1 Logistic Regression using the NASA Challenger dataset</a>
+<ul>
+<li><a href="#sec-4-1-1">4.1.1 load</a></li>
+<li><a href="#sec-4-1-2">4.1.2 an aside, reading data from CSV</a></li>
+<li><a href="#sec-4-1-3">4.1.3 clean</a></li>
+<li><a href="#sec-4-1-4">4.1.4 do</a></li>
+</ul>
+</li>
+<li><a href="#sec-4-2">4.2 logistic regression of a binary response</a>
+<ul>
+<li><a href="#sec-4-2-1">4.2.1 load the response variable data</a></li>
+<li><a href="#sec-4-2-2">4.2.2 clean</a></li>
+<li><a href="#sec-4-2-3">4.2.3 do logistic analysis</a></li>
+<li><a href="#sec-4-2-4">4.2.4 Plot the Regression Curve</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -199,16 +214,62 @@ dev.off()
 <p>
 Copied from Peter Caley's notebook on challenger disaster page 103 'O' ring failures.   <a href="https://alliance.anu.edu.au/access/content/group/bf77d6fc-d1e1-401c-806a-25fbe06a82d0/R wiki files/R logistic example/Caley Statistical Modelling Course Notes - Working copy.pdf">https://alliance.anu.edu.au/access/content/group/bf77d6fc-d1e1-401c-806a-25fbe06a82d0/R%20wiki%20files/R%20logistic%20example/Caley%20Statistical%20Modelling%20Course%20Notes%20-%20Working%20copy.pdf</a>
 </p>
+</div>
 
-<p>
-Plot the data
-A plot of the data is shown below:
-</p>
-<p>
-<img src="pfail.png"  alt="pfail.png" />
-</p>
-<p>
-Made with the following code:
+<div id="outline-container-4-1-1" class="outline-4">
+<h4 id="sec-4-1-1"><span class="section-number-4">4.1.1</span> load</h4>
+<div class="outline-text-4" id="text-4-1-1">
+
+
+
+
+<pre class="src src-R"><span style="color: #586e75;">################################################################</span>
+<span style="color: #586e75;"># </span><span style="color: #586e75;">name:logistic regression</span>
+<span style="color: #586e75;">#</span><span style="color: #586e75;">Load the data</span>
+<span style="color: #586e75;">#</span><span style="color: #586e75;">The following R code will construct the dataset</span>
+n.fail <span style="color: #268bd2; font-weight: bold;">&lt;-</span> c(2, 0, 0, 1, 0, 0, 1, 0, 0, 1, 2, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0)
+temp <span style="color: #268bd2; font-weight: bold;">&lt;-</span> c(53, 66, 68, 70, 75, 78, 57, 67, 69, 70, 75, 79, 58, 67, 70, 72, 76, 81, 63, 67, 70,
+73, 76)
+<span style="color: #586e75;"># </span><span style="color: #586e75;">there were 6 o rings for each of 23 attempts</span>
+total <span style="color: #268bd2; font-weight: bold;">&lt;-</span> rep(6,23)
+<span style="color: #586e75;"># </span><span style="color: #586e75;">probability of fail</span>
+p.fail <span style="color: #268bd2; font-weight: bold;">&lt;-</span> n.fail/total
+<span style="color: #586e75;"># </span><span style="color: #586e75;">Response = resp column bind them together  </span>
+resp <span style="color: #268bd2; font-weight: bold;">&lt;-</span> cbind(n.fail, total-n.fail)
+</pre>
+
+</div>
+
+</div>
+
+<div id="outline-container-4-1-2" class="outline-4">
+<h4 id="sec-4-1-2"><span class="section-number-4">4.1.2</span> an aside, reading data from CSV</h4>
+<div class="outline-text-4" id="text-4-1-2">
+
+
+
+
+<pre class="src src-R"><span style="color: #586e75;">###########################################################################</span>
+<span style="color: #586e75;"># </span><span style="color: #586e75;">we can write text files easily once the data frame or matrix is in shape</span>
+data <span style="color: #268bd2; font-weight: bold;">&lt;-</span> as.data.frame(cbind(resp,temp))
+names(data) <span style="color: #268bd2; font-weight: bold;">&lt;-</span> c(<span style="color: #2aa198;">'nfail'</span>,<span style="color: #2aa198;">'totalMinusNfail'</span>, <span style="color: #2aa198;">'temp'</span>)
+write.csv(data, <span style="color: #2aa198;">'learnR-logistic-data.csv'</span>, row.names=F)
+
+<span style="color: #586e75;">###########################################################################</span>
+<span style="color: #586e75;"># </span><span style="color: #586e75;">and read it in </span>
+data2 <span style="color: #268bd2; font-weight: bold;">&lt;-</span> read.csv(<span style="color: #2aa198;">'learnR-logistic-data.csv'</span>)
+
+</pre>
+
+</div>
+
+</div>
+
+<div id="outline-container-4-1-3" class="outline-4">
+<h4 id="sec-4-1-3"><span class="section-number-4">4.1.3</span> clean</h4>
+<div class="outline-text-4" id="text-4-1-3">
+
+<p>Exploratory data analysis often begins with a plot
 </p>
 
 
@@ -220,8 +281,71 @@ title(<span style="color: #2aa198;">'A plot of the proportion failed by temperat
 dev.off()
 </pre>
 
+<p>
+A plot of the data is shown below:
+</p>
+<p>
+<img src="pfail.png"  alt="pfail.png" />
+</p>
+</div>
+
+</div>
+
+<div id="outline-container-4-1-4" class="outline-4">
+<h4 id="sec-4-1-4"><span class="section-number-4">4.1.4</span> do</h4>
+<div class="outline-text-4" id="text-4-1-4">
+
+<ul>
+<li id="sec-4-1-4-1">Fit a logistic linear regression<br/>
 
 
+
+<pre class="src src-R"><span style="color: #586e75;">###########################################################################</span>
+<span style="color: #586e75;"># </span><span style="color: #586e75;">newnode: linear</span>
+linear <span style="color: #268bd2; font-weight: bold;">&lt;-</span> glm(resp ~ 1 + temp, family=binomial(link=logit))
+summary(linear)
+linearoutput <span style="color: #268bd2; font-weight: bold;">&lt;-</span> summary(linear)
+linearoutput$coeff
+</pre>
+
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+<caption></caption>
+<colgroup><col class="right" /><col class="right" /><col class="right" /><col class="right" />
+</colgroup>
+<tbody>
+<tr><td class="right">Estimate</td><td class="right">SE</td><td class="right">z value</td><td class="right">p value</td></tr>
+<tr><td class="right">5.08497723236888</td><td class="right">3.05247411952113</td><td class="right">1.66585433103249</td><td class="right">0.0957424316329616</td></tr>
+<tr><td class="right">-0.11560116666022</td><td class="right">0.0470236223378252</td><td class="right">-2.45836370983339</td><td class="right">0.0139571741811117</td></tr>
+</tbody>
+</table>
+
+</li>
+</ul>
+<ul>
+<li id="sec-4-1-4-2">select a coefficient<br/>
+
+
+
+<pre class="src src-R"><span style="color: #586e75;">###########################################################################</span>
+<span style="color: #586e75;"># </span><span style="color: #586e75;">newnode: learnR-logistic</span>
+cf <span style="color: #268bd2; font-weight: bold;">&lt;-</span> linearoutput$coeff
+signif(cf[which(row.names(cf) == <span style="color: #2aa198;">'temp'</span>),<span style="color: #2aa198;">'Estimate'</span>],2)
+
+</pre>
+
+
+
+<pre class="example">
+-0.12
+</pre>
+
+
+</li>
+</ul>
+<ul>
+<li id="sec-4-1-4-3">Write the output to a spreadsheet<br/>
+It is often good to write the output to a spreadsheet file.
 
 <p>
 <a name="label-tab1-echo-FALSE-results-tex" id="label-tab1-echo-FALSE-results-tex"></a>
@@ -229,10 +353,182 @@ dev.off()
 
 
 
+
+
+<pre class="src src-R"><span style="color: #586e75;">###########################################################################</span>
+<span style="color: #586e75;"># </span><span style="color: #586e75;">newnode: learnR-logistic</span>
+write.csv(linearoutput$coeff,<span style="color: #2aa198;">"challengerOfails.csv"</span>)
+</pre>
+
+
+</li>
+</ul>
+<ul>
+<li id="sec-4-1-4-4">model diagnostic 1 - plots of model performance<br/>
+
+
+
+<pre class="src src-R"><span style="color: #586e75;">###########################################################################</span>
+<span style="color: #586e75;"># </span><span style="color: #586e75;">newnode: learnR-logistic</span>
+ png(<span style="color: #2aa198;">'challengerLogistic.png'</span>)
+ par(mfrow=c(2,2))
+ plot(linear)
+ dev.off()
+
+</pre>
+
+
 <p>
-<a name="label-pfailfit-fig-TRUE-echo-FALSE" id="label-pfailfit-fig-TRUE-echo-FALSE"></a>
+Some standard model diagnostics plot is shown
+</p>
+<p>
+<img src="challengerLogistic.png"  alt="challengerLogistic.png" />
 </p>
 
+</li>
+</ul>
+<ul>
+<li id="sec-4-1-4-5">model diagnostic 2 - plot of the prediction<br/>
+
+
+
+
+<pre class="src src-R"><span style="color: #586e75;">###########################################################################</span>
+<span style="color: #586e75;"># </span><span style="color: #586e75;">newnode: learnR-logistic</span>
+ dummy <span style="color: #268bd2; font-weight: bold;">&lt;-</span> data.frame(temp=seq(20,100,1))
+ pred.prob <span style="color: #268bd2; font-weight: bold;">&lt;-</span> predict.glm(linear, newdata=dummy, type=<span style="color: #2aa198;">"resp"</span>)
+ png(<span style="color: #2aa198;">'pfailfit.png'</span>)
+ plot(temp, p.fail, xlab=<span style="color: #2aa198;">"Launch Temperature (F)"</span>,
+  ylab=<span style="color: #2aa198;">"Proportion Failing"</span>, pch=16, xlim=c(20,100), ylim=c(0,1.0))
+ lines(dummy$temp, pred.prob)
+ dev.off()
+
+</pre>
+
+
+<p>
+A plot of prediction fit to the data is shown
+</p>
+<p>
+<img src="pfailfit.png"  alt="pfailfit.png" />
+</p>
+</li>
+</ul>
+</div>
+</div>
+
+</div>
+
+<div id="outline-container-4-2" class="outline-3">
+<h3 id="sec-4-2"><span class="section-number-3">4.2</span> logistic regression of a binary response</h3>
+<div class="outline-text-3" id="text-4-2">
+
+
+<p>
+In the next example we analyse the data as a binary response variable where 1 represents damage to field joints, and a 0 represents no damage.
+</p>
+<p>
+This was copied from D. Cook, P. Dixon, W. M. Duckworth, M. S. Kaiser, K. Koehler, W. Q. Meeker and W. R. Stephenson.  'Binary Response and Logistic Regression Analysis' <a href="https://alliance.anu.edu.au/access/content/group/bf77d6fc-d1e1-401c-806a-25fbe06a82d0/R wiki files/R logistic example/stat415_chapter3.pdf">https://alliance.anu.edu.au/access/content/group/bf77d6fc-d1e1-401c-806a-25fbe06a82d0/R%20wiki%20files/R%20logistic%20example/stat415_chapter3.pdf</a>
+</p>
+
+</div>
+
+<div id="outline-container-4-2-1" class="outline-4">
+<h4 id="sec-4-2-1"><span class="section-number-4">4.2.1</span> load the response variable data</h4>
+<div class="outline-text-4" id="text-4-2-1">
+
+
+
+
+<pre class="src src-R"><span style="color: #586e75;">###########################################################################</span>
+resp <span style="color: #268bd2; font-weight: bold;">&lt;-</span> as.data.frame(resp)
+resp$fail <span style="color: #268bd2; font-weight: bold;">&lt;-</span> ifelse(resp$n.fail &gt; 0, 1, 0)
+resp$temp <span style="color: #268bd2; font-weight: bold;">&lt;-</span> temp
+</pre>
+
+</div>
+
+</div>
+
+<div id="outline-container-4-2-2" class="outline-4">
+<h4 id="sec-4-2-2"><span class="section-number-4">4.2.2</span> clean</h4>
+<div class="outline-text-4" id="text-4-2-2">
+
+
+
+
+<pre class="src src-R">png(<span style="color: #2aa198;">'fail.png'</span>)
+with(resp, plot(temp, fail, xlab=<span style="color: #2aa198;">"Launch Temperature (F)"</span>,ylab=<span style="color: #2aa198;">"Joint damage"</span>, pch=16, xlim=c(50,80), ylim=c(0,1.0))
+     )
+dev.off()
+</pre>
+
+
+<p>
+Incidence of joint failure by temperature:
+</p>
+<p>
+<img src="fail.png"  alt="fail.png" />
+</p>
+</div>
+
+</div>
+
+<div id="outline-container-4-2-3" class="outline-4">
+<h4 id="sec-4-2-3"><span class="section-number-4">4.2.3</span> do logistic analysis</h4>
+<div class="outline-text-4" id="text-4-2-3">
+
+<p>Now do the analysis as suggested on page 22.
+</p>
+
+
+<pre class="src src-R">chal.logit <span style="color: #268bd2; font-weight: bold;">&lt;-</span> glm(fail~temp,family=binomial, data = resp)
+summary(chal.logit)$coeff
+</pre>
+
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+<caption></caption>
+<colgroup><col class="right" /><col class="right" /><col class="right" /><col class="right" />
+</colgroup>
+<tbody>
+<tr><td class="right">Estimate</td><td class="right">Std. Error</td><td class="right">z value</td><td class="right">p value</td></tr>
+<tr><td class="right">15.0429016476892</td><td class="right">7.37863013178574</td><td class="right">2.03871198027493</td><td class="right">0.0414787813758369</td></tr>
+<tr><td class="right">-0.232162744218401</td><td class="right">0.108236429548873</td><td class="right">-2.14495937445507</td><td class="right">0.0319560953057822</td></tr>
+</tbody>
+</table>
+
+
+</div>
+
+</div>
+
+<div id="outline-container-4-2-4" class="outline-4">
+<h4 id="sec-4-2-4"><span class="section-number-4">4.2.4</span> Plot the Regression Curve</h4>
+<div class="outline-text-4" id="text-4-2-4">
+
+
+
+
+<pre class="src src-R">png(<span style="color: #2aa198;">'pfailfit2.png'</span>)
+cx <span style="color: #268bd2; font-weight: bold;">&lt;-</span> c(50:80/1)
+cyhat <span style="color: #268bd2; font-weight: bold;">&lt;-</span> coefficients(chal.logit)[c(1)] +
+coefficients(chal.logit)[c(2)]*cx
+cpihat <span style="color: #268bd2; font-weight: bold;">&lt;-</span> exp(cyhat)/(1+exp(cyhat))
+with(resp,plot(temp,fail,xlab=<span style="color: #2aa198;">"Temperature"</span>,ylab=<span style="color: #2aa198;">"Damage"</span>,
+main=<span style="color: #2aa198;">"Incidence of Booster Field Joint Damage vs. Temperature"</span>, xlim = c(50,80))
+     )
+lines(cx,cpihat)
+dev.off()
+</pre>
+
+
+<p>
+And the result 
+</p>
+<p>
+<img src="pfailfit2.png"  alt="pfailfit2.png" />
+</p></div>
 </div>
 </div>
 </div>
