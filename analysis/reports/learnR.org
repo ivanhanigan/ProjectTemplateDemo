@@ -4,6 +4,8 @@
 #+LaTeX_CLASS: article
 #+LaTeX_CLASS_OPTIONS: [a4paper]
 -----
+* the R codes that reproduce this result
+The R file is found at https://alliance.anu.edu.au/access/content/group/8e2de204-c243-4ef6-9839-ab290a534b91/learnR/learnR-logistic.r
 
 * fit a model
 #+name:fit
