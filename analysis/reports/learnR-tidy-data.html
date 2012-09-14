@@ -1,0 +1,340 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+               "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<title>learnR tidy data</title>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<meta name="title" content="learnR tidy data"/>
+<meta name="generator" content="Org-mode"/>
+<meta name="generated" content="2012-09-14 12:08:42 EST"/>
+<meta name="author" content="Ivan Hanigan"/>
+<meta name="description" content=""/>
+<meta name="keywords" content=""/>
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  html { font-family: Times, serif; font-size: 12pt; }
+  .title  { text-align: center; }
+  .todo   { color: red; }
+  .done   { color: green; }
+  .tag    { background-color: #add8e6; font-weight:normal }
+  .target { }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .right  {margin-left:auto; margin-right:0px;  text-align:right;}
+  .left   {margin-left:0px;  margin-right:auto; text-align:left;}
+  .center {margin-left:auto; margin-right:auto; text-align:center;}
+  p.verse { margin-left: 3% }
+  pre {
+	border: 1pt solid #AEBDCC;
+	background-color: #F3F5F7;
+	padding: 5pt;
+	font-family: courier, monospace;
+        font-size: 90%;
+        overflow:auto;
+  }
+  table { border-collapse: collapse; }
+  td, th { vertical-align: top;  }
+  th.right  { text-align:center;  }
+  th.left   { text-align:center;   }
+  th.center { text-align:center; }
+  td.right  { text-align:right;  }
+  td.left   { text-align:left;   }
+  td.center { text-align:center; }
+  dt { font-weight: bold; }
+  div.figure { padding: 0.5em; }
+  div.figure p { text-align: center; }
+  div.inlinetask {
+    padding:10px;
+    border:2px solid gray;
+    margin:10px;
+    background: #ffffcc;
+  }
+  textarea { overflow-x: auto; }
+  .linenr { font-size:smaller }
+  .code-highlighted {background-color:#ffff00;}
+  .org-info-js_info-navigation { border-style:none; }
+  #org-info-js_console-label { font-size:10px; font-weight:bold;
+                               white-space:nowrap; }
+  .org-info-js_search-highlight {background-color:#ffff00; color:#000000;
+                                 font-weight:bold; }
+  /*]]>*/-->
+</style>
+<script type="text/javascript">
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+
+</head>
+<body>
+
+<div id="preamble">
+
+</div>
+
+<div id="content">
+<h1 class="title">learnR tidy data</h1>
+
+
+<hr/>
+
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#sec-1">1 Introduction</a></li>
+<li><a href="#sec-2">2 Hadley Wickham</a></li>
+<li><a href="#sec-3">3 Hayward Godwin</a>
+<ul>
+<li><a href="#sec-3-1">3.1 Data Aggregation in R: plyr, sqldf, data.table, tapply and aggregate</a></li>
+<li><a href="#sec-3-2">3.2 The Data</a></li>
+<li><a href="#sec-3-3">3.3 A tool by any other name: plyr ddply.</a></li>
+<li><a href="#sec-3-4">3.4 It needs no sequel: sqldf</a></li>
+<li><a href="#sec-3-5">3.5 How the tables have turned: data.table</a></li>
+<li><a href="#sec-3-6">3.6 tapply()</a></li>
+<li><a href="#sec-3-7">3.7 aggregate()</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-1" class="outline-2">
+<h2 id="sec-1"><span class="section-number-2">1</span> Introduction</h2>
+<div class="outline-text-2" id="text-1">
+
+<p>The tute will start with a discussion of Hadley's video and paper.
+Then will review Haywards Blog post.
+</p>
+</div>
+
+</div>
+
+<div id="outline-container-2" class="outline-2">
+<h2 id="sec-2"><span class="section-number-2">2</span> Hadley Wickham</h2>
+<div class="outline-text-2" id="text-2">
+
+<p>The request was to cover functions for data processing.  I thought I'd set this video by Hadley Wickham as homework (feel free to fast forward the easy bits).
+</p>
+<p>
+<a href="http://vimeo.com/33727555">http://vimeo.com/33727555</a>
+</p>
+<p>
+that also has this paper attached
+</p>
+<p>
+<a href="http://vita.had.co.nz/papers/tidy-data.pdf">http://vita.had.co.nz/papers/tidy-data.pdf</a>
+</p>
+<p>
+The Video Blurb:
+This presentation was given to the NYC Open Statistical Computing Meetup by Hadley Wickham, Assistant Professor of Statistics at Rice University, and creator of many of the most popular R packages in CRAN.
+It's often said that 80% of the effort of analysis is spent just getting the data ready to analyse, the process of data cleaning. Data cleaning is not only a vital first step, but it is oftenrepeated multiple times over the course of an analysis as new problems come to light. Despite the amount of time it takes up, there has been little research on how to do clean data well. Part of the challenge is the breadth of activities that cleaning encompasses, from outlier checking to date parsing to missing value imputation. To get a handle on the problem, this talk focusses on a small, but important, subset of data cleaning that I call data "tidying'": getting the data in a format that is easy to manipulate, model, and visualise.
+In this talk you'll see some of the crazy data sets that I've struggled with over the years, and learn the basic tools for making messy data tidy. I'll also discuss tidy tools, tools that take tidy data as input and return tidy data as output. The idea of a tidy tool is useful for critiquing existing R functions, and will help to explain why some tasks that seem like they should be easy are in fact quite hard. This work ties together reshape2, plyr and ggplot2 with a consistent philosophy of data. Once you master this data format, you'll find it much easier to manipulate, model and visualise your data.
+</p>
+</div>
+
+</div>
+
+<div id="outline-container-3" class="outline-2">
+<h2 id="sec-3"><span class="section-number-2">3</span> Hayward Godwin</h2>
+<div class="outline-text-2" id="text-3">
+
+<p>This material was sourced from <a href="http://www.psychwire.co.uk/2011/04/data-aggregation-in-r-plyr-sqldf-and-data-table/">http://www.psychwire.co.uk/2011/04/data-aggregation-in-r-plyr-sqldf-and-data-table/</a>
+</p>
+</div>
+
+<div id="outline-container-3-1" class="outline-3">
+<h3 id="sec-3-1"><span class="section-number-3">3.1</span> Data Aggregation in R: plyr, sqldf, data.table, tapply and aggregate</h3>
+<div class="outline-text-3" id="text-3-1">
+
+<p>For this post, I’m going to be using the lexdec dataset that comes with the languageR package.
+</p></div>
+
+</div>
+
+<div id="outline-container-3-2" class="outline-3">
+<h3 id="sec-3-2"><span class="section-number-3">3.2</span> The Data</h3>
+<div class="outline-text-3" id="text-3-2">
+
+
+
+
+<pre class="src src-R"><span style="color: #586e75;">################################################################</span>
+<span style="color: #586e75;"># </span><span style="color: #586e75;">name:load</span>
+install.packages(<span style="color: #2aa198;">'languageR'</span>)
+<span style="color: #268bd2; font-weight: bold;">require</span>(languageR)
+data(lexdec)
+head(lexdec)
+full_list <span style="color: #268bd2; font-weight: bold;">&lt;-</span> lexdec
+
+</pre>
+
+
+</div>
+
+</div>
+
+<div id="outline-container-3-3" class="outline-3">
+<h3 id="sec-3-3"><span class="section-number-3">3.3</span> A tool by any other name: plyr ddply.</h3>
+<div class="outline-text-3" id="text-3-3">
+
+<p>This function gives as it’s output a dataframe and gives as output another dataframe. The plyr functions are written in the syntax of XYply where X is the input object type and Y is the output object type. In this case, both ds of ddply stand for dataframe. Let’s look at some initial code:
+</p>
+
+
+<pre class="src src-R"><span style="color: #586e75;">################################################################</span>
+<span style="color: #586e75;">#</span><span style="color: #586e75;">ddply</span>
+install.packages(<span style="color: #2aa198;">'plyr'</span>)
+<span style="color: #268bd2; font-weight: bold;">require</span>(plyr)
+head( ddply(full_list, c(<span style="color: #2aa198;">"Subject"</span>,<span style="color: #2aa198;">"Class"</span>), <span style="color: #859900; font-weight: bold;">function</span>(df)mean(df$RT)))
+<span style="color: #586e75;"># </span><span style="color: #586e75;">let&#8217;s get the column labelled:</span>
+head(ddply(full_list, c(<span style="color: #2aa198;">"Subject"</span>,<span style="color: #2aa198;">"Class"</span>), <span style="color: #859900; font-weight: bold;">function</span>(df)
+           <span style="color: #859900; font-weight: bold;">return</span>(c(AVERAGE=mean(df$RT)))))
+<span style="color: #586e75;"># </span><span style="color: #586e75;">Great! Now let&#8217;s add some more columns to output</span>
+head(ddply(full_list, c(<span style="color: #2aa198;">"Subject"</span>,<span style="color: #2aa198;">"Class"</span>), <span style="color: #859900; font-weight: bold;">function</span>(df)
+           <span style="color: #859900; font-weight: bold;">return</span>(c(AVERAGE=mean(df$RT),
+                    MEDIAN=median(df$RT),
+                    SE=sqrt(var(df$RT)/length(df$RT))
+                    )
+                  )
+           )
+     )
+
+</pre>
+
+
+</div>
+
+</div>
+
+<div id="outline-container-3-4" class="outline-3">
+<h3 id="sec-3-4"><span class="section-number-3">3.4</span> It needs no sequel: sqldf</h3>
+<div class="outline-text-3" id="text-3-4">
+
+<p>A library for running SQL statements on data frames. 
+</p>
+
+
+<pre class="src src-R"><span style="color: #586e75;">################################################################</span>
+<span style="color: #586e75;"># </span><span style="color: #586e75;">sqldf</span>
+install.packages(<span style="color: #2aa198;">'sqldf'</span>)
+<span style="color: #268bd2; font-weight: bold;">require</span>(sqldf)
+head(
+sqldf(<span style="color: #2aa198;">"SELECT SUBJECT, CLASS, AVG(RT) AS AVERAGE,MEDIAN(RT) AS MEDIAN,</span>
+<span style="color: #2aa198;">         SQRT((VARIANCE(RT)/COUNT(RT))) AS SE</span>
+<span style="color: #2aa198;">       FROM full_list</span>
+<span style="color: #2aa198;">       GROUP BY SUBJECT, CLASS</span>
+<span style="color: #2aa198;">      "</span>)
+)
+
+</pre>
+
+
+</div>
+
+</div>
+
+<div id="outline-container-3-5" class="outline-3">
+<h3 id="sec-3-5"><span class="section-number-3">3.5</span> How the tables have turned: data.table</h3>
+<div class="outline-text-3" id="text-3-5">
+
+
+<p>
+Considered the roadrunner of aggregation functions. It’s damn fast! 
+</p>
+
+
+<pre class="src src-R"><span style="color: #586e75;">################################################################</span>
+<span style="color: #586e75;"># </span><span style="color: #586e75;">data.table</span>
+install.packages(<span style="color: #2aa198;">'data.table'</span>)
+<span style="color: #268bd2; font-weight: bold;">require</span>(data.table)
+dps_dt = data.table(full_list)
+head(
+dps_dt[,list(AVERAGE=.Internal(mean(RT)),
+             MEDIAN=median(RT),
+             SE= sqrt(var(RT)/length(RT))),
+             by=list(Subject,Class)
+             ]
+     )
+
+</pre>
+
+<p>
+Note that the first line takes our data.frame called full<sub>list</sub> and casts it as a data.table object type. Here, two lists are used to do two things:
+</p><ul>
+<li>create the column names and
+</li>
+<li>group the data by class and spec. 
+</li>
+</ul>
+
+<p>The first list call sets up the column names and the calculations that need to be run. The second list gets fed to the by function which then aggregates by class and spec.
+</p>
+</div>
+
+</div>
+
+<div id="outline-container-3-6" class="outline-3">
+<h3 id="sec-3-6"><span class="section-number-3">3.6</span> tapply()</h3>
+<div class="outline-text-3" id="text-3-6">
+
+<p>The apply family = 'applys' functions to elements of data objects.
+Part of the core R language.
+Say we just want the median and would like to replicate a PIVOT table.
+</p>
+
+
+<pre class="src src-R"><span style="color: #586e75;">################################################################</span>
+<span style="color: #586e75;"># </span><span style="color: #586e75;">tapply</span>
+head(
+  tapply(as.numeric(full_list$RT),
+         list(full_list$Subject,  full_list$Class),
+         median)
+  )
+
+</pre>
+
+</div>
+
+</div>
+
+<div id="outline-container-3-7" class="outline-3">
+<h3 id="sec-3-7"><span class="section-number-3">3.7</span> aggregate()</h3>
+<div class="outline-text-3" id="text-3-7">
+
+
+
+
+<pre class="src src-R"><span style="color: #586e75;">################################################################</span>
+<span style="color: #586e75;"># </span><span style="color: #586e75;">aggregate</span>
+aggregated_output <span style="color: #268bd2; font-weight: bold;">&lt;-</span> aggregate(RT ~ Subject * Class, data=full_list,
+                               FUN=median)
+head(arrange(aggregated_output,Subject,Class))
+
+</pre>
+
+</div>
+</div>
+</div>
+</div>
+
+</body>
+</html>

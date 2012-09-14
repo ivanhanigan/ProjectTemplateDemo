@@ -1481,6 +1481,9 @@ sessionInfo()
 #+end_src
 
 
+** TODO transforming data
+see [[./analysis/reports/learnR-tidy-data.org]]
+
 * Conclusions
 The Emacs Orgmode file is the compendium from which the whole analysis can be re-created.
 The upshot is that once I have developed the project's main \emph{\textbf{.org}} file and completed the analysis I can send it (and only it) to another analyst and if they run it (using Emacs) it should get the project to exactly the same state that it was in when I left it, ready for reproduction or extension.

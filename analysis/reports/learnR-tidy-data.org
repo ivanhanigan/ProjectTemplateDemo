@@ -1,0 +1,128 @@
+#+TITLE:learnR tidy data
+#+AUTHOR: Ivan Hanigan
+#+email: ivan.hanigan@anu.edu.au
+#+LaTeX_CLASS: article
+#+LaTeX_CLASS_OPTIONS: [a4paper]
+#+LATEX: \tableofcontents
+-----
+* Introduction
+The tute will start with a discussion of Hadley's video and paper.
+Then will review Haywards Blog post.
+
+* Hadley Wickham
+The request was to cover functions for data processing.  I thought I'd set this video by Hadley Wickham as homework (feel free to fast forward the easy bits).
+
+http://vimeo.com/33727555
+
+that also has this paper attached
+
+http://vita.had.co.nz/papers/tidy-data.pdf
+
+The Video Blurb:
+This presentation was given to the NYC Open Statistical Computing Meetup by Hadley Wickham, Assistant Professor of Statistics at Rice University, and creator of many of the most popular R packages in CRAN.
+It's often said that 80% of the effort of analysis is spent just getting the data ready to analyse, the process of data cleaning. Data cleaning is not only a vital first step, but it is oftenrepeated multiple times over the course of an analysis as new problems come to light. Despite the amount of time it takes up, there has been little research on how to do clean data well. Part of the challenge is the breadth of activities that cleaning encompasses, from outlier checking to date parsing to missing value imputation. To get a handle on the problem, this talk focusses on a small, but important, subset of data cleaning that I call data "tidying'": getting the data in a format that is easy to manipulate, model, and visualise.
+In this talk you'll see some of the crazy data sets that I've struggled with over the years, and learn the basic tools for making messy data tidy. I'll also discuss tidy tools, tools that take tidy data as input and return tidy data as output. The idea of a tidy tool is useful for critiquing existing R functions, and will help to explain why some tasks that seem like they should be easy are in fact quite hard. This work ties together reshape2, plyr and ggplot2 with a consistent philosophy of data. Once you master this data format, you'll find it much easier to manipulate, model and visualise your data.
+
+* Hayward Godwin
+This material was sourced from http://www.psychwire.co.uk/2011/04/data-aggregation-in-r-plyr-sqldf-and-data-table/
+** Data Aggregation in R: plyr, sqldf, data.table, tapply and aggregate
+For this post, I’m going to be using the lexdec dataset that comes with the languageR package.
+** The Data
+#+name:learnR-tidy-data
+#+begin_src R :session *R* :tangle learnR-tidy-data.r  :eval no
+  ################################################################
+  # name:load
+  install.packages('languageR')
+  require(languageR)
+  data(lexdec)
+  head(lexdec)
+  full_list <- lexdec
+  
+#+end_src
+
+** A tool by any other name: plyr ddply.
+This function gives as it’s output a dataframe and gives as output another dataframe. The plyr functions are written in the syntax of XYply where X is the input object type and Y is the output object type. In this case, both ds of ddply stand for dataframe. Let’s look at some initial code:
+#+begin_src R :session *R* :tangle learnR-tidy-data.r  :eval no
+  ################################################################
+  #ddply
+  install.packages('plyr')
+  require(plyr)
+  head( ddply(full_list, c("Subject","Class"), function(df)mean(df$RT)))
+  # let’s get the column labelled:
+  head(ddply(full_list, c("Subject","Class"), function(df)
+             return(c(AVERAGE=mean(df$RT)))))
+  # Great! Now let’s add some more columns to output
+  head(ddply(full_list, c("Subject","Class"), function(df)
+             return(c(AVERAGE=mean(df$RT),
+                      MEDIAN=median(df$RT),
+                      SE=sqrt(var(df$RT)/length(df$RT))
+                      )
+                    )
+             )
+       )
+  
+#+end_src
+
+** It needs no sequel: sqldf
+A library for running SQL statements on data frames. 
+#+begin_src R :session *R* :tangle learnR-tidy-data.r  :eval no
+  ################################################################
+  # sqldf
+  install.packages('sqldf')
+  require(sqldf)
+  head(
+  sqldf("SELECT SUBJECT, CLASS, AVG(RT) AS AVERAGE,MEDIAN(RT) AS MEDIAN,
+           SQRT((VARIANCE(RT)/COUNT(RT))) AS SE
+         FROM full_list
+         GROUP BY SUBJECT, CLASS
+        ")
+  )
+    
+#+end_src
+
+** How the tables have turned: data.table
+
+Considered the roadrunner of aggregation functions. It’s damn fast! 
+#+begin_src R :session *R* :tangle learnR-tidy-data.r  :eval no
+  ################################################################
+  # data.table
+  install.packages('data.table')
+  require(data.table)
+  dps_dt = data.table(full_list)
+  head(
+  dps_dt[,list(AVERAGE=.Internal(mean(RT)),
+               MEDIAN=median(RT),
+               SE= sqrt(var(RT)/length(RT))),
+               by=list(Subject,Class)
+               ]
+       )
+  
+#+end_src
+Note that the first line takes our data.frame called full_list and casts it as a data.table object type. Here, two lists are used to do two things:
+- create the column names and
+- group the data by class and spec. 
+The first list call sets up the column names and the calculations that need to be run. The second list gets fed to the by function which then aggregates by class and spec.
+
+** tapply()
+The apply family = 'applys' functions to elements of data objects.
+Part of the core R language.
+Say we just want the median and would like to replicate a PIVOT table.
+#+begin_src R :session *R* :tangle learnR-tidy-data.r  :eval no
+  ################################################################
+  # tapply
+  head(
+    tapply(as.numeric(full_list$RT),
+           list(full_list$Subject,  full_list$Class),
+           median)
+    )
+  
+#+end_src
+** aggregate() 
+#+begin_src R :session *R* :tangle learnR-tidy-data.r  :eval no
+  ################################################################
+  # aggregate
+  aggregated_output <- aggregate(RT ~ Subject * Class, data=full_list,
+                                 FUN=median)
+  head(arrange(aggregated_output,Subject,Class))
+  
+#+end_src
