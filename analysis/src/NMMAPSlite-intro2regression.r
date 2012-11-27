@@ -12,7 +12,7 @@
 
 ######################################################
 # tools
-setwd("~/projects/ProjectTemplateDemo/analysis")
+setwd("~/ProjectTemplateDemo/analysis")
 if(!require(ProjectTemplate)) install.packages('ProjectTemplate'); require(ProjectTemplate)
 #load.project()
 #ls()
@@ -131,6 +131,7 @@ df[row.names(df) %in% c(9354,9356),]$date
 # so lets re run without these obs
 df2 <- df[!row.names(df) %in% c(9354,9356),]
 # to avoid duplicating code just re run fit2, replacing data=df with df2
+fit2 <- glm(cvd ~ pm10tmean + ns(tmax, df = 8) + ns(dptp, df = 4) + ns(time, df = 7*numYears), data = df2, family = poisson)
 # tmax still significant but not so extreme
 # check diagnostic plots again
 par(mfrow=c(2,2))
