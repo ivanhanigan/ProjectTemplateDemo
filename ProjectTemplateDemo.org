@@ -1198,21 +1198,13 @@ sessionInfo()
   par(mfrow=c(2,2))
   termplot(fit2, se =T)
   dev.off()
-  
-  # plot prediction
-  df$predictedCvd <- predict(fit2, df, 'response')
-  # baseline is given by the intercept
-  fit3 <- glm(cvd ~ 1, data = df, family = poisson)
-  df$baseline <-  predict(fit3, df, 'response')
-  with(subset(df, date>=as.Date('1995-01-01') & date <= as.Date('1995-07-31')),
-   plot(date, cvd, type ='l', col = 'grey')
-          )
-  with(subset(df, date>=as.Date('1995-01-01') & date <= as.Date('1995-07-31')),
-          lines(date,predictedCvd)
-          )
-  with(subset(df, date>=as.Date('1995-01-01') & date <= as.Date('1995-07-31')),
-   lines(date,baseline)
-          )
+
+  # significance of spline terms
+  drop1(fit2, test='Chisq')
+  # also note AIC. best model includes all of these terms
+  # BIC can be computed instead (but still labelled AIC) using
+  drop1(fit2, test='Chisq', k = log(nrow(data)))
+
   ######################################################
   # some diagnostics
   # need to load a function to calculate poisson adjusted R squared
@@ -1231,11 +1223,6 @@ sessionInfo()
   # 0.51
   # the difference is presumably due to the arguments about how to account for unexplainable variance in the poisson distribution?
   
-  # significance of spline terms
-  drop1(fit2, test='Chisq')
-  # also note AIC. best model includes all of these terms
-  # BIC can be computed instead (but still labelled AIC) using
-  drop1(fit2, test='Chisq', k = log(nrow(data)))
   
   # diagnostic plots
   par(mfrow=c(2,2))
@@ -1246,11 +1233,25 @@ sessionInfo()
   # NB the numbers refer to the row.names attribute which still refer to the original dataset, not this subset
   df[row.names(df) %in% c(9354,9356),]$date
   # as suspected [1] "1995-07-15" "1995-07-16"
-  
+  # plot prediction over 1995 heatwave
+  df$predictedCvd <- predict(fit2, df, 'response')
+  # baseline is given by the intercept
+  fit3 <- glm(cvd ~ 1, data = df, family = poisson)
+  df$baseline <-  predict(fit3, df, 'response')
+  with(subset(df, date>=as.Date('1995-01-01') & date <= as.Date('1995-07-31')),
+   plot(date, cvd, type ='l', col = 'grey')
+          )
+  with(subset(df, date>=as.Date('1995-01-01') & date <= as.Date('1995-07-31')),
+          lines(date,predictedCvd)
+          )
+  with(subset(df, date>=as.Date('1995-01-01') & date <= as.Date('1995-07-31')),
+   lines(date,baseline)
+          )
+    
   ######################################################
-  # so lets re run without these obs
+  # so lets re run without these extreme obs
   df2 <- df[!row.names(df) %in% c(9354,9356),]
-  # to avoid duplicating code just re run fit2, replacing data=df with df2
+  # to avoid duplicating data just replace fit2, calling data=df2 rather than df
   fit2 <- glm(cvd ~ pm10tmean + ns(tmax, df = 8) + ns(dptp, df = 4) + ns(time, df = 7*numYears), data = df2, family = poisson)
   summary(fit2)
   # tmax still significant but not so extreme
