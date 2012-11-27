@@ -120,7 +120,7 @@ with(subset(df, date>=as.Date('1995-01-01') & date <= as.Date('1995-07-31')),
         )
 par(new=T)
 with(subset(df, date>=as.Date('1995-01-01') & date <= as.Date('1995-07-31')),
- plot(date, tmax, type ='l', col = 'grey')
+ plot(date, tmax, type ='l', col = 'black')
         )
   
 
@@ -183,7 +183,8 @@ infl <- influence.measures(fit2)
 # which observations 'are' influential
 inflk <- which(apply(infl$is.inf, 1, any))
 length(inflk)
-
+summary(infl) # only these
+infl          # all  
 
 ######################################################
 # now what about serial autocorrelation in the residuals?
