@@ -18,19 +18,21 @@ ls()
 if(!require(mgcv)) install.packages('mgcv');require(mgcv)
 require(splines)
 if(!require(NMMAPSlite)) install.packages('NMMAPSlite');require(NMMAPSlite)
-initDB('data')
+# initDB('NMMAPS')
+# this sometimes can't connect to the source webserver, can still run with local Chicago data
 
 ######################################################
 # load
-cities <- getMetaData('cities')
-head(cities)
-city_i <- 'Chicago'
-city <- subset(cities, cityname == city_i)$city
-data <- readCity(city)
-data$yy <- substr(data$date,1,4)
-dir.create('data/NMMAPSraw')
-write.table(data, file.path('data/NMMAPSraw', paste(city_i, '.csv',sep='')), row.names = F)
-data <- read.table("data/NMMAPSraw/Chicago.csv", header=T, quote="\"")
+# cities <- getMetaData('cities')
+# head(cities)
+# city_i <- 'Chicago'
+# city <- subset(cities, cityname == city_i)$city
+# data <- readCity(city)
+# data$yy <- substr(data$date,1,4)
+# dir.create('data/NMMAPSraw')
+# write.table(data, file.path('data', paste(city_i, '.csv',sep='')), row.names = F)
+#data <- read.table("data/Chicago.csv", header=T, quote="\"")
+load.project()
 data$date <- as.Date(data$date)
 
 ######################################################
