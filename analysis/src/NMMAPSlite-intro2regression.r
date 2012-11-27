@@ -84,7 +84,7 @@ dev.off()
 drop1(fit2, test='Chisq')
 # also note AIC. best model includes all of these terms
 # BIC can be computed instead (but still labelled AIC) using
-drop1(fit2, test='Chisq', k = log(nrow(data)))
+drop1(fit2, test='Chisq', k = log(nrow(df)))
 
 ######################################################
 # some diagnostics
@@ -115,13 +115,24 @@ dev.off()
 df[row.names(df) %in% c(9354,9356),]$date
 # as suspected [1] "1995-07-15" "1995-07-16"
 # plot prediction over 1995 heatwave
+with(subset(df, date>=as.Date('1995-01-01') & date <= as.Date('1995-07-31')),
+ plot(date, cvd, type ='l', col = 'grey')
+        )
+par(new=T)
+with(subset(df, date>=as.Date('1995-01-01') & date <= as.Date('1995-07-31')),
+ plot(date, tmax, type ='l', col = 'grey')
+        )
+  
+
 df$predictedCvd <- predict(fit2, df, 'response')
 # baseline is given by the intercept
 fit3 <- glm(cvd ~ 1, data = df, family = poisson)
 df$baseline <-  predict(fit3, df, 'response')
+par(new=T)
 with(subset(df, date>=as.Date('1995-01-01') & date <= as.Date('1995-07-31')),
  plot(date, cvd, type ='l', col = 'grey')
         )
+
 with(subset(df, date>=as.Date('1995-01-01') & date <= as.Date('1995-07-31')),
         lines(date,predictedCvd)
         )
