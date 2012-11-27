@@ -1302,9 +1302,9 @@ sessionInfo()
   # which observations 'are' influential
   inflk <- which(apply(infl$is.inf, 1, any))
   length(inflk)
-  summary(infl) # only these
-  infl          # all  
-  
+  summary(infl)[1,] # only the first of these
+  summary(infl)     # only influential    
+
   ######################################################
   # now what about serial autocorrelation in the residuals?
   
