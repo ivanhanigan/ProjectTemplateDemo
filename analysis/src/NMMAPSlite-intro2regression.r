@@ -31,10 +31,10 @@ if(!require(NMMAPSlite)) install.packages('NMMAPSlite');require(NMMAPSlite)
 # data <- readCity(city)
 # data$yy <- substr(data$date,1,4)
 # dir.create('data/NMMAPSraw')
-# write.table(data, file.path('data', paste(city_i, '.csv',sep='')), row.names = F)
-#data <- read.table("data/Chicago.csv", header=T, quote="\"")
+# write.table(data, file.path('data', paste(city_i, '.csv',sep='')), row.names = F, sep = ',')
+# data <- read.table("data/Chicago.csv", header=T)
 load.project()
-data <- Chicago
+data <- Chicago; rm(Chicago)
 data$date <- as.Date(data$date)
 
 ######################################################
