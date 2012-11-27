@@ -12,6 +12,7 @@
 
 ######################################################
 # tools
+setwd("~/projects/ProjectTemplateDemo/analysis")
 if(!require(ProjectTemplate)) install.packages('ProjectTemplate'); require(ProjectTemplate)
 load.project()
 ls()
