@@ -1117,7 +1117,7 @@ sessionInfo()
 
 ** COMMENT NMMAPSlite intro to regression
 #+name:NMMAPSliteEgGAM
-#+begin_src R :session *R* :tangle analysis/src/NMMAPSlite-intro2regression.r :eval no 
+#+begin_src R :session *shell* :tangle analysis/src/NMMAPSlite-intro2regression.r :eval no 
   #################################################################
   # ~/NMMAPSlite-intro2regression.r
   # author:
