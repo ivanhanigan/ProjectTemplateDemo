@@ -32,6 +32,7 @@ dir.create('data/NMMAPSraw')
 write.table(data, file.path('data/NMMAPSraw', paste(city_i, '.csv',sep='')), row.names = F)
 data <- read.table("data/NMMAPSraw/Chicago.csv", header=T, quote="\"")
 data$date <- as.Date(data$date)
+
 ######################################################
 # check
 par(mfrow=c(2,1), mar=c(4,4,3,1))
