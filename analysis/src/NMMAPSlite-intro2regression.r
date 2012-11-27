@@ -28,7 +28,8 @@ city_i <- 'Chicago'
 city <- subset(cities, cityname == city_i)$city
 data <- readCity(city)
 data$yy <- substr(data$date,1,4)
-
+dir.create('data/NMMAPSraw')
+write.table(data, file.path('data/NMMAPSraw', paste(city_i, '.csv',sep='')), row.names = F)
 ######################################################
 # check
 par(mfrow=c(2,1), mar=c(4,4,3,1))
