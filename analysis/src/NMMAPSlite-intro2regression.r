@@ -14,8 +14,8 @@
 # tools
 setwd("~/projects/ProjectTemplateDemo/analysis")
 if(!require(ProjectTemplate)) install.packages('ProjectTemplate'); require(ProjectTemplate)
-load.project()
-ls()
+#load.project()
+#ls()
 if(!require(mgcv)) install.packages('mgcv');require(mgcv)
 require(splines)
 if(!require(NMMAPSlite)) install.packages('NMMAPSlite');require(NMMAPSlite)
@@ -34,6 +34,7 @@ if(!require(NMMAPSlite)) install.packages('NMMAPSlite');require(NMMAPSlite)
 # write.table(data, file.path('data', paste(city_i, '.csv',sep='')), row.names = F)
 #data <- read.table("data/Chicago.csv", header=T, quote="\"")
 load.project()
+data <- Chicago
 data$date <- as.Date(data$date)
 
 ######################################################
