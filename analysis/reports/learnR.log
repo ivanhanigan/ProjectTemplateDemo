@@ -1,10 +1,18 @@
-This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=pdflatex 2012.7.8)  31 AUG 2012 14:12
+This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=pdflatex 2012.8.1)  22 SEP 2012 08:57
 entering extended mode
- file:line:error style messages enabled.
  %&-line parsing enabled.
-**\nonstopmode \catcode126=12 \def\normaltilde{~}\catcode126=13 \let~\normaltil
-de  \input ./learnR.tex
-(./learnR.tex (/usr/share/texmf-texlive/tex/latex/base/article.cls
+**learnR.tex
+(./learnR.tex
+LaTeX2e <2009/09/24>
+Babel <v3.8l> and hyphenation patterns for english, usenglishmax, dumylang, noh
+yphenation, farsi, arabic, croatian, bulgarian, ukrainian, russian, czech, slov
+ak, danish, dutch, finnish, french, basque, ngerman, german, german-x-2009-06-1
+9, ngerman-x-2009-06-19, ibycus, monogreek, greek, ancientgreek, hungarian, san
+skrit, italian, latin, latvian, lithuanian, mongolian2a, mongolian, bokmal, nyn
+orsk, romanian, irish, coptic, serbian, turkish, welsh, esperanto, uppersorbian
+, estonian, indonesian, interlingua, icelandic, kurmanji, slovenian, polish, po
+rtuguese, spanish, galician, catalan, swedish, ukenglish, pinyin, loaded.
+(/usr/share/texmf-texlive/tex/latex/base/article.cls
 Document Class: article 2007/10/19 v1.4h Standard LaTeX document class
 (/usr/share/texmf-texlive/tex/latex/base/size10.clo
 File: size10.clo 2007/10/19 v1.4h Standard LaTeX file (size option)
@@ -172,7 +180,7 @@ Package: atbegshi 2008/07/31 v1.9 At begin shipout hook (HO)
 File: hpdftex.def 2009/10/09 v6.79a Hyperref driver for pdfTeX
 \Fld@listcount=\count94
 )
-(/usr/share/R/share/texmf/tex/latex/Sweave.sty
+(/usr/share/texmf/tex/latex/R/tex/latex/Sweave.sty
 Package: Sweave 
 
 (/usr/share/texmf-texlive/tex/latex/base/ifthen.sty
@@ -210,7 +218,7 @@ Style option: `fancyvrb' v2.7a, with DG/SPQR fixes, and firstline=lastline fix
 \c@FancyVerbLine=\count97
 \FV@StepNumber=\count98
 \FV@OutFile=\write3
-) (/usr/share/R/share/texmf/tex/latex/upquote.sty
+) (/usr/share/texmf/tex/latex/R/tex/latex/upquote.sty
 Package: upquote 2003/08/11 v1.1 Covington's upright-quote modification to verb
 atim and verb
 
@@ -302,7 +310,8 @@ LaTeX Font Info:    Try loading font information for T1+aer on input line 100.
 
 (/usr/share/texmf-texlive/tex/latex/ae/t1aer.fd
 File: t1aer.fd 1997/11/16 Font definitions for T1/aer.
-)))) (./learnR.aux)
+))))
+No file learnR.aux.
 \openout1 = `learnR.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 22.
@@ -321,7 +330,6 @@ LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 22.
 LaTeX Font Info:    ... okay on input line 22.
 LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 22.
 LaTeX Font Info:    Try loading font information for TS1+cmr on input line 22.
-
 (/usr/share/texmf-texlive/tex/latex/base/ts1cmr.fd
 File: ts1cmr.fd 1999/05/25 v2.5h Standard LaTeX font definitions
 )
@@ -338,13 +346,12 @@ Package: refcount 2008/08/11 v3.1 Data extraction from references (HO)
 )
 LaTeX Info: Redefining \ref on input line 22.
 LaTeX Info: Redefining \pageref on input line 22.
- (./learnR.out)
-(./learnR.out)
 \@outlinefile=\write4
 \openout4 = `learnR.out'.
 
 \AtBeginShipoutBox=\box29
- (/usr/share/texmf-texlive/tex/context/base/supp-pdf.mkii
+
+(/usr/share/texmf-texlive/tex/context/base/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
 \scratchcounter=\count100
 \scratchdimen=\dimen108
@@ -367,31 +374,30 @@ LaTeX Font Info:    External font `cmex10' loaded for size
 (Font)              <7> on input line 31.
 LaTeX Font Info:    External font `cmex10' loaded for size
 (Font)              <5> on input line 31.
- (./learnR.toc)
+
+
+Package hyperref Warning: old toc file detected, not used; run LaTeX again.
+
 \tf@toc=\write5
 \openout5 = `learnR.toc'.
 
- (./learnR.lot)
 \tf@lot=\write6
 \openout6 = `learnR.lot'.
 
- (./learnR.lof)
 \tf@lof=\write7
 \openout7 = `learnR.lof'.
 
 
-[1
+LaTeX Warning: Citation `Peng2011' on page 1 undefined on input line 47.
 
-{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}]
 LaTeX Font Info:    Try loading font information for T1+aett on input line 53.
-
 (/usr/share/texmf-texlive/tex/latex/ae/t1aett.fd
 File: t1aett.fd 1997/11/16 Font definitions for T1/aett.
 )
 LaTeX Font Info:    Try loading font information for TS1+aett on input line 54.
 
 
-(/usr/share/R/share/texmf/tex/latex/ts1aett.fd
+(/usr/share/texmf/tex/latex/R/tex/latex/ts1aett.fd
 File: ts1aett.fd 
 )
 LaTeX Font Info:    Try loading font information for TS1+cmtt on input line 54.
@@ -402,36 +408,70 @@ File: ts1cmtt.fd 1999/05/25 v2.5h Standard LaTeX font definitions
 )
 LaTeX Font Info:    Font shape `TS1/aett/m/sl' in size <10> not available
 (Font)              Font shape `TS1/cmtt/m/sl' tried instead on input line 54.
+ [1
+
+{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}]
+
+LaTeX Warning: Reference `ATable' on page 2 undefined on input line 88.
 
 
 LaTeX Warning: Reference `aPlot.png' on page 2 undefined on input line 106.
 
-[2] <aPlot.png, id=79, 216.81pt x 216.81pt>
+<aPlot.png, id=24, 216.81pt x 216.81pt>
 File: aPlot.png Graphic file (type png)
- <use aPlot.png> [3 <./aPlot.png (PNG copy)>]
+ <use aPlot.png>
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+
+LaTeX Warning: Reference `LastPage' on page 2 undefined on input line 120.
+
+[2]
+
+LaTeX Warning: Reference `LastPage' on page 3 undefined on input line 120.
+
+[3 <./aPlot.png (PNG copy)>]
 Overfull \hbox (130.81834pt too wide) in paragraph at lines 122--123
 \T1/aer/m/n/10 This blog post []$\T1/aett/m/n/10 http : / / www . win-[]vector 
 . com / blog / 2012 / 04 / how-[]to-[]remember-[]point-[]shape-[]codes-[]in-[]r
 /$[]
  []
 
-<pchopts.png, id=88, 481.8pt x 481.8pt>
-File: pchopts.png Graphic file (type png)
- <use pchopts.png> [4
 
- <./pchopts.png (PNG copy)>] AED: lastpage setting LastPage [5] (./learnR.aux)
+LaTeX Warning: Reference `fig:pchopts.png' on page 4 undefined on input line 12
+7.
+
+
+LaTeX Warning: Citation `Paradis2002' on page 4 undefined on input line 127.
+
+<pchopts.png, id=41, 481.8pt x 481.8pt>
+File: pchopts.png Graphic file (type png)
+ <use pchopts.png>
+
+LaTeX Warning: Reference `LastPage' on page 4 undefined on input line 147.
+
+[4
+
+ <./pchopts.png (PNG copy)>] AED: lastpage setting LastPage
+
+LaTeX Warning: Reference `LastPage' on page 5 undefined on input line 189.
+
+[5] (./learnR.aux)
 
 LaTeX Warning: There were undefined references.
 
+
+LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
+
  ) 
 Here is how much of TeX's memory you used:
- 5691 strings out of 493848
- 81947 string characters out of 1152824
- 144405 words of memory out of 3000000
- 8798 multiletter control sequences out of 15000+50000
+ 5669 strings out of 493848
+ 81725 string characters out of 1152824
+ 143257 words of memory out of 3000000
+ 8788 multiletter control sequences out of 15000+50000
  31656 words of font info for 67 fonts, out of 3000000 for 9000
  714 hyphenation exceptions out of 8191
- 38i,10n,43p,620b,342s stack positions out of 5000i,500n,10000p,200000b,50000s
+ 38i,10n,43p,530b,448s stack positions out of 5000i,500n,10000p,200000b,50000s
 {/usr/share/texmf/fonts/enc/dvips/cm-super/cm-super-ts1.enc}</usr/share/texmf
 -texlive/fonts/type1/public/amsfonts/cm/cmbx10.pfb></usr/share/texmf-texlive/fo
 nts/type1/public/amsfonts/cm/cmbx12.pfb></usr/share/texmf-texlive/fonts/type1/p
@@ -444,9 +484,9 @@ ype1/public/amsfonts/cm/cmsltt10.pfb></usr/share/texmf-texlive/fonts/type1/publ
 ic/amsfonts/cm/cmsy10.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts
 /cm/cmti10.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmtt10.
 pfb></usr/share/texmf/fonts/type1/public/cm-super/sfst1000.pfb>
-Output written on learnR.pdf (5 pages, 235513 bytes).
+Output written on learnR.pdf (5 pages, 225805 bytes).
 PDF statistics:
- 149 PDF objects out of 1000 (max. 8388607)
+ 105 PDF objects out of 1000 (max. 8388607)
  23 named destinations out of 1000 (max. 500000)
- 79 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 15 words of extra memory for PDF output out of 10000 (max. 10000000)
 
