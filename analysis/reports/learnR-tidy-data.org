@@ -8,7 +8,7 @@
 * Introduction
 The tute will start with a discussion of Hadley's video and paper.
 Then will review Haywards Blog post.
-
+R codes are available for download at [[http://alliance.anu.edu.au/access/content/group/8e2de204-c243-4ef6-9839-ab290a534b91/learnR/learnR-tidy-data.r]]
 * Hadley Wickham
 The request was to cover functions for data processing.  I thought I'd set this video by Hadley Wickham as homework (feel free to fast forward the easy bits).
 
