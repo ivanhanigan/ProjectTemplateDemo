@@ -49,8 +49,13 @@ This function gives as it’s output a dataframe and gives as output another dat
   require(plyr)
   head( ddply(full_list, c("Subject","Class"), function(df)mean(df$RT)))
   # let’s get the column labelled:
-  head(ddply(full_list, c("Subject","Class"), function(df)
-             return(c(AVERAGE=mean(df$RT)))))
+  head(
+    ddply(
+         .data = full_list, .variables = c("Subject","Class"),
+         .fun = function(df) return(c(AVERAGE=mean(df$RT)))
+         )
+  )
+
   # Great! Now let’s add some more columns to output
   head(ddply(full_list, c("Subject","Class"), function(df)
              return(c(AVERAGE=mean(df$RT),
