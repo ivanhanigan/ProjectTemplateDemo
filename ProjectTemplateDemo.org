@@ -1117,7 +1117,7 @@ sessionInfo()
 
 ** COMMENT NMMAPSlite intro to regression
 #+name:NMMAPSliteEgGAM
-#+begin_src R :session *shell* :tangle analysis/src/NMMAPSlite-intro2regression.r :eval no 
+#+begin_src R :session *R* :tangle analysis/src/NMMAPSlite-intro2regression.r :eval no 
   #################################################################
   # ~/NMMAPSlite-intro2regression.r
   # author:
@@ -1131,7 +1131,7 @@ sessionInfo()
   
   ######################################################
   # tools
-  setwd("~/ProjectTemplateDemo/analysis")
+  setwd("~/tools/ProjectTemplateDemo/analysis")
   if(!require(ProjectTemplate)) install.packages('ProjectTemplate'); require(ProjectTemplate)
   #load.project()
   #ls()
@@ -1192,19 +1192,57 @@ sessionInfo()
   
   ######################################################
   # do same model as glm
-  fit2 <- glm(cvd ~ pm10tmean + ns(tmax, df = 8) + ns(dptp, df = 4) + ns(time, df = 7*numYears), data = df, family = poisson)
+  form1 <-  reformulate(c("pm10tmean","ns(tmax, df = 8)",
+                  "ns(dptp, df = 4)","ns(time, df = 7*numYears)"),
+                  response = "cvd")
+  form1
+  
+  fit2 <- glm(form1, data = df, family = quasipoisson)
   summary(fit2)
+  # Dispersion parameter for quasipoisson family taken to be 1.22264
   # plot responses
   par(mfrow=c(2,2))
   termplot(fit2, se =T)
   dev.off()
-
+  
   # significance of spline terms
+  # NB that as this is quasipoisson therefor no AIC is available
+  # to use AIC we'd use poisson (check dispersion parameter ~ 1)
+  fit2 <- glm(form1, data = df, family = poisson)
   drop1(fit2, test='Chisq')
-  # also note AIC. best model includes all of these terms
+  # take note of the AIC. best model includes all of these terms
+  # but dropping pm10tmean didn't make much difference (more than about
+  # 4 is significant c.f. Burnham and Anderson)
   # BIC can be computed instead (but still labelled AIC) using
   drop1(fit2, test='Chisq', k = log(nrow(df)))
-
+  
+  # alternately if we want to stick with quasipoisson
+  # we could use liklihood ratio tests
+  # but need to always have the same sized data frame
+  df2 <- df[c("cvd", "time","pm10tmean", "tmax", "dptp")]
+  df2 <- na.omit(df2)
+  fit2.0 <- glm(form1, data = df2,
+                family = quasipoisson)
+  form2 <-  reformulate(c("ns(tmax, df = 8)",
+                  "ns(dptp, df = 4)","ns(time, df = 7*numYears)"),
+                  response = "cvd")
+  form2
+  fit2.1 <- glm(form2, data = df2,
+                family = quasipoisson)
+  
+  if(!require(lmtest)) install.packages('lmtest'); require(lmtest)
+  #lrtest(form1, form2, data = df2)
+  lrtest(fit2.0, fit2.1)
+  # no p value?
+  
+  waldtest(fit2.0, fit2.1)
+  # p value = 0.2448
+  form3 <-  reformulate(c("pm10tmean", "ns(dptp, df = 4)","ns(time, df = 7*numYears)"),
+                  response = "cvd")
+  form3
+  fit2.2 <- glm(form3, data = df2, family = quasipoisson)
+  waldtest(fit2.0, fit2.2)
+  # pvalue 7.742e-06
   ######################################################
   # some diagnostics
   # need to load a function to calculate poisson adjusted R squared
@@ -1241,8 +1279,8 @@ sessionInfo()
   with(subset(df, date>=as.Date('1995-01-01') & date <= as.Date('1995-07-31')),
    plot(date, tmax, type ='l', col = 'black')
           )
-    
-
+  
+  
   df$predictedCvd <- predict(fit2, df, 'response')
   # baseline is given by the intercept
   fit3 <- glm(cvd ~ 1, data = df, family = poisson)
@@ -1251,14 +1289,14 @@ sessionInfo()
   with(subset(df, date>=as.Date('1995-01-01') & date <= as.Date('1995-07-31')),
    plot(date, cvd, type ='l', col = 'grey')
           )
-
+  
   with(subset(df, date>=as.Date('1995-01-01') & date <= as.Date('1995-07-31')),
           lines(date,predictedCvd)
           )
   with(subset(df, date>=as.Date('1995-01-01') & date <= as.Date('1995-07-31')),
    lines(date,baseline)
           )
-    
+  
   ######################################################
   # so lets re run without these extreme obs
   df2 <- df[!row.names(df) %in% c(9354,9356),]
@@ -1303,8 +1341,8 @@ sessionInfo()
   inflk <- which(apply(infl$is.inf, 1, any))
   length(inflk)
   summary(infl)[1,] # only the first of these
-  summary(infl)     # only influential    
-
+  summary(infl)     # only influential
+  
   ######################################################
   # now what about serial autocorrelation in the residuals?
   
