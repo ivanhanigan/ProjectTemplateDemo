@@ -1,4 +1,3 @@
-
 #################################################################
 # ~/NMMAPSlite-intro2regression.r
 # author:
@@ -12,26 +11,31 @@
 
 ######################################################
 # tools
+setwd("~/ProjectTemplateDemo/analysis")
 if(!require(ProjectTemplate)) install.packages('ProjectTemplate'); require(ProjectTemplate)
-load.project()
-ls()
+#load.project()
+#ls()
 if(!require(mgcv)) install.packages('mgcv');require(mgcv)
 require(splines)
 if(!require(NMMAPSlite)) install.packages('NMMAPSlite');require(NMMAPSlite)
-initDB('data')
+# initDB('NMMAPS')
+# this sometimes can't connect to the source webserver, can still run with local Chicago data
 
 ######################################################
 # load
-cities <- getMetaData('cities')
-head(cities)
-city_i <- 'Chicago'
-city <- subset(cities, cityname == city_i)$city
-data <- readCity(city)
-data$yy <- substr(data$date,1,4)
-dir.create('data/NMMAPSraw')
-write.table(data, file.path('data/NMMAPSraw', paste(city_i, '.csv',sep='')), row.names = F)
-data <- read.table("data/NMMAPSraw/Chicago.csv", header=T, quote="\"")
+# cities <- getMetaData('cities')
+# head(cities)
+# city_i <- 'Chicago'
+# city <- subset(cities, cityname == city_i)$city
+# data <- readCity(city)
+# data$yy <- substr(data$date,1,4)
+# dir.create('data/NMMAPSraw')
+# write.table(data, file.path('data', paste(city_i, '.csv',sep='')), row.names = F, sep = ',')
+# data <- read.table("data/Chicago.csv", header=T)
+load.project()
+data <- Chicago; rm(Chicago)
 data$date <- as.Date(data$date)
+
 ######################################################
 # check
 par(mfrow=c(2,1), mar=c(4,4,3,1))
@@ -69,25 +73,18 @@ gam.check(fit)
 ######################################################
 # do same model as glm
 fit2 <- glm(cvd ~ pm10tmean + ns(tmax, df = 8) + ns(dptp, df = 4) + ns(time, df = 7*numYears), data = df, family = poisson)
+summary(fit2)
 # plot responses
 par(mfrow=c(2,2))
 termplot(fit2, se =T)
 dev.off()
 
-# plot prediction
-df$predictedCvd <- predict(fit2, df, 'response')
-# baseline is given by the intercept
-fit3 <- glm(cvd ~ 1, data = df, family = poisson)
-df$baseline <-  predict(fit3, df, 'response')
-with(subset(df, date>=as.Date('1995-01-01') & date <= as.Date('1995-07-31')),
- plot(date, cvd, type ='l', col = 'grey')
-        )
-with(subset(df, date>=as.Date('1995-01-01') & date <= as.Date('1995-07-31')),
-        lines(date,predictedCvd)
-        )
-with(subset(df, date>=as.Date('1995-01-01') & date <= as.Date('1995-07-31')),
- lines(date,baseline)
-        )
+# significance of spline terms
+drop1(fit2, test='Chisq')
+# also note AIC. best model includes all of these terms
+# BIC can be computed instead (but still labelled AIC) using
+drop1(fit2, test='Chisq', k = log(nrow(df)))
+
 ######################################################
 # some diagnostics
 # need to load a function to calculate poisson adjusted R squared
@@ -106,11 +103,6 @@ RsquaredGlm(fit2)
 # 0.51
 # the difference is presumably due to the arguments about how to account for unexplainable variance in the poisson distribution?
 
-# significance of spline terms
-drop1(fit2, test='Chisq')
-# also note AIC. best model includes all of these terms
-# BIC can be computed instead (but still labelled AIC) using
-drop1(fit2, test='Chisq', k = log(nrow(data)))
 
 # diagnostic plots
 par(mfrow=c(2,2))
@@ -121,12 +113,41 @@ dev.off()
 # NB the numbers refer to the row.names attribute which still refer to the original dataset, not this subset
 df[row.names(df) %in% c(9354,9356),]$date
 # as suspected [1] "1995-07-15" "1995-07-16"
+# plot prediction over 1995 heatwave
+with(subset(df, date>=as.Date('1995-01-01') & date <= as.Date('1995-07-31')),
+ plot(date, cvd, type ='l', col = 'grey')
+        )
+par(new=T)
+with(subset(df, date>=as.Date('1995-01-01') & date <= as.Date('1995-07-31')),
+ plot(date, tmax, type ='l', col = 'black')
+        )
+
+
+df$predictedCvd <- predict(fit2, df, 'response')
+# baseline is given by the intercept
+fit3 <- glm(cvd ~ 1, data = df, family = poisson)
+df$baseline <-  predict(fit3, df, 'response')
+par(new=T)
+with(subset(df, date>=as.Date('1995-01-01') & date <= as.Date('1995-07-31')),
+ plot(date, cvd, type ='l', col = 'grey')
+        )
+
+with(subset(df, date>=as.Date('1995-01-01') & date <= as.Date('1995-07-31')),
+        lines(date,predictedCvd)
+        )
+with(subset(df, date>=as.Date('1995-01-01') & date <= as.Date('1995-07-31')),
+ lines(date,baseline)
+        )
 
 ######################################################
-# so lets re run without these obs
+# so lets re run without these extreme obs
 df2 <- df[!row.names(df) %in% c(9354,9356),]
-# to avoid duplicating code just re run fit2, replacing data=df with df2
+# to avoid duplicating data just replace fit2, calling data=df2 rather than df
+fit2 <- glm(cvd ~ pm10tmean + ns(tmax, df = 8) + ns(dptp, df = 4) + ns(time, df = 7*numYears), data = df2, family = poisson)
+summary(fit2)
 # tmax still significant but not so extreme
+RsquaredGlm(fit2)
+# 0.5 is not much different
 # check diagnostic plots again
 par(mfrow=c(2,2))
 plot(fit2)
@@ -161,7 +182,8 @@ infl <- influence.measures(fit2)
 # which observations 'are' influential
 inflk <- which(apply(infl$is.inf, 1, any))
 length(inflk)
-
+summary(infl)[1,] # only the first of these
+summary(infl)     # only influential
 
 ######################################################
 # now what about serial autocorrelation in the residuals?
